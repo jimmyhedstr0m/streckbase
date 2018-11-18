@@ -1,18 +1,18 @@
-import dbConnection from "../../config/dbConnection";
-import { User } from './user';
+import { BaseRepository } from "./../base.repository";
+import { User } from "./user";
 
-export class UserRepository {
+export class UserRepository extends BaseRepository {
 
-  constructor() { }
+  constructor() {
+    super();
+  }
+
+  getUser(id: string): Promise<User[]> {
+    return this.dbQuery("SELECT user_id, firstname, lastname, email, debt FROM Users WHERE user_id=?", [id]);
+  }
 
   getUsers(): Promise<User[]> {
-    return new Promise((resolve, reject) => {
-      dbConnection.query('SELECT user_id, firstname, lastname, email, debt FROM Users', (err: Error, results: User[]) => {
-        if (err) return reject(err);
-        resolve(results);
-      });
-    });
+    return this.dbQuery("SELECT user_id, firstname, lastname, email, debt FROM Users");
   }
 
 }
-
