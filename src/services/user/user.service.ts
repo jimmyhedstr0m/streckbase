@@ -1,12 +1,17 @@
-import { User } from "./user";
+import { User, UserPurchase } from "./user";
 import { User as DBUser } from "./../../repositories/user/user";
 import { UserRepository } from "./../../repositories/user/user.repository";
+import { PurchaseRepository } from "./../../repositories/purchase/purchase.repository";
+import { Purchase } from "./../../repositories/purchase/purchase";
+import { Item } from "./../item/item";
 
 export class UserService {
   private userRepository: UserRepository;
+  private purchaseRepository: PurchaseRepository;
   
   constructor() {
     this.userRepository = new UserRepository();
+    this.purchaseRepository = new PurchaseRepository();
   }
 
   private map(dbUser: DBUser): User {
@@ -22,12 +27,37 @@ export class UserService {
   }
 
   getUser(id: string): Promise<User> {
+    let user: User;
+
     return this.userRepository.getUser(id)
-      .then((dbUsers: DBUser[]) => this.map(dbUsers[0]));
+      .then((dbUsers: DBUser[]) => {
+        user = this.map(dbUsers[0]);
+
+        if (!user) return null;
+        return this.purchaseRepository.getPurchases(id)
+      })
+      .then((purchases: Purchase[]) => {
+        user.purchases = purchases.map((purchase: Purchase) => <UserPurchase>({
+          id: purchase.id,
+          date: purchase.date,
+          item: <Item>({
+            id: purchase.item_id,
+            name: purchase.name,
+            price: purchase.price,
+            volume: purchase.volume,
+            alcohol: purchase.alcohol,
+            barcodes: purchase.codes ? purchase.codes.split(",") : []
+          })
+        }));
+        return user;
+      });
   }
 
-  getUsers(): Promise<User[]> {
-    return this.userRepository.getUsers()
+  getUsers(limit: number, offset: number): Promise<User[]> {
+    limit = typeof limit === "number" ? limit : 20;
+    offset = typeof offset === "number" ? offset : 0;
+
+    return this.userRepository.getUsers(limit, offset)
       .then((dbUsers: DBUser[]) => dbUsers.map<User>((dbUser: DBUser) => this.map(dbUser)));
   }
 

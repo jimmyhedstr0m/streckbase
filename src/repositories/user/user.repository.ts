@@ -11,8 +11,13 @@ export class UserRepository extends BaseRepository {
     return this.dbQuery("SELECT user_id, firstname, lastname, email, debt FROM Users WHERE user_id=?", [id]);
   }
 
-  getUsers(): Promise<User[]> {
-    return this.dbQuery("SELECT user_id, firstname, lastname, email, debt FROM Users");
+  getUsers(limit: number, offset: number): Promise<User[]> {
+    return this.dbQuery(`
+      SELECT user_id, firstname, lastname, email, debt
+      FROM Users
+      LIMIT ?
+      OFFSET ?
+    `, [limit, offset]);
   }
 
 }
