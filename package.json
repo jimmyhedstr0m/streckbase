@@ -4,10 +4,13 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build": "tsc",
-    "dev": "ts-node ./src/index.ts",
-    "start": "nodemon ./dist/index.js",
-    "prod": "npm run build && npm run start"
+    "start": "npm run serve",
+    "build": "npm run npm run build-ts",
+    "serve": "node dist/index.js",
+    "watch-node": "nodemon dist/index.js",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "build-ts": "tsc",
+    "watch-ts": "tsc -w"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +29,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "concurrently": "^4.1.0",
     "nodemon": "^1.18.6",
     "ts-node": "^7.0.1",
     "typescript": "^3.1.6"
