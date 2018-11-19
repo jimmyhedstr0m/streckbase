@@ -27,8 +27,11 @@ export class ItemService {
       .then((dbItems: DBItem[]) => this.map(dbItems[0]));
   }
 
-  getItems(): Promise<Item[]> {
-    return this.itemRepository.getItems()
+  getItems(limit: number, offset: number): Promise<Item[]> {
+    limit = typeof limit === "number" ? limit : 20;
+    offset = typeof offset === "number" ? offset : 0;
+
+    return this.itemRepository.getItems(limit, offset)
       .then((dbItems: DBItem[]) => dbItems.map<Item>((dbItem: DBItem) => this.map(dbItem)));
   }
 

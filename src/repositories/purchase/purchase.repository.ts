@@ -21,8 +21,8 @@ export class PurchaseRepository extends BaseRepository {
       ORDER BY Purchases.id
       DESC
       LIMIT ?
-      OFFSET ?`
-    , [userId, limit, offset]);
+      OFFSET ?
+    `, [userId, limit, offset]);
   }
 
 }
