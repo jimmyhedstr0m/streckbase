@@ -1,8 +1,9 @@
-import { User, UserPurchase } from "./user";
+import { User } from "./user";
 import { User as DBUser } from "./../../repositories/user/user";
 import { UserRepository } from "./../../repositories/user/user.repository";
 import { PurchaseRepository } from "./../../repositories/purchase/purchase.repository";
-import { Purchase } from "./../../repositories/purchase/purchase";
+import { Purchase } from "./../../services/purchase/purchase";
+import { Purchase as DBPurchase } from "./../../repositories/purchase/purchase";
 import { Item } from "./../item/item";
 
 export class UserService {
@@ -49,10 +50,10 @@ export class UserService {
       if (!user) return null;
       currentUser = user;
 
-      return this.purchaseRepository.getPurchases(id, limit, offset)
+      return this.purchaseRepository.getUserPurchases(id, limit, offset)
     })
-    .then((purchases: Purchase[]) => {
-      currentUser.purchases = purchases.map((purchase: Purchase) => <UserPurchase>({
+    .then((purchases: DBPurchase[]) => {
+      currentUser.purchases = purchases.map((purchase: DBPurchase) => <Purchase>({
         id: purchase.id,
         date: purchase.date,
         item: <Item>({

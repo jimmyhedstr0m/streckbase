@@ -9,6 +9,7 @@ dotenv.load({ path: ".env.dev" });
 
 import * as userController from "./controllers/user.controller";
 import * as itemController from "./controllers/item.controller";
+import * as purchaseController from "./controllers/purchase.controller";
 
 app.set("port", process.env.PORT || 8080);
 app.set("json spaces", 2);
@@ -27,6 +28,7 @@ app.get("/users/:id?", userController.getUsers);
 app.get("/users/:id/purchases", userController.getUserPurchases);
 app.get("/items/:id?", itemController.getItems);
 app.get("/items/barcode/:barcode", itemController.getBarcodeItem);
+app.get("/purchases", purchaseController.getPurchases);
 app.get("/test", (req, res) => {
   res.json({ok: "yes"});
 })

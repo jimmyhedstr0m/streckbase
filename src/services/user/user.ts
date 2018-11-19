@@ -1,10 +1,4 @@
-import { Item } from "./../item/item";
-
-export interface UserPurchase {
-  id: number;
-  date: Date;
-  item: Item;
-}
+import { Purchase } from "./../purchase/purchase";
 
 export interface User {
   id: string;
@@ -12,5 +6,5 @@ export interface User {
   firstname: string;
   lastname: string;
   debt: number;
-  purchases?: UserPurchase[];
+  purchases?: Purchase[];
 }
