@@ -11,12 +11,10 @@ export const getUsers = (req, res) => {
       .then((user: User) => {
         if (!user) return res.sendStatus(404);
         res.json(user);
-      })
-      .catch((err: any) => console.log("err", err));
+      });
   } else {
     userService.getUsers()
-      .then((users: User[]) => res.json(users))
-      .catch((err: any) => console.log("err", err));
+      .then((users: User[]) => res.json(users));
   }
 
 }

@@ -8,6 +8,7 @@ const app = express();
 dotenv.load({ path: ".env.dev" });
 
 import * as userController from "./controllers/user.controller";
+import * as itemController from "./controllers/item.controller";
 
 app.set("port", process.env.PORT || 8080);
 app.set("json spaces", 2);
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/users/:id?", userController.getUsers);
+app.get("/items/:id?", itemController.getItems);
 app.get("/test", (req, res) => {
   res.json({ok: "yes"});
 })
