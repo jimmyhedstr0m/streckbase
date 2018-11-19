@@ -7,8 +7,9 @@ export class UserRepository extends BaseRepository {
     super();
   }
 
-  getUser(id: string): Promise<User[]> {
-    return this.dbQuery("SELECT user_id, firstname, lastname, email, debt FROM Users WHERE user_id=?", [id]);
+  getUser(id: string): Promise<User> {
+    return this.dbQuery("SELECT user_id, firstname, lastname, email, debt FROM Users WHERE user_id=?", [id])
+      .then((res: any[]) => res[0]);
   }
 
   getUsers(limit: number, offset: number): Promise<User[]> {

@@ -19,5 +19,12 @@ export const getItems = (req, res) => {
     itemService.getItems(limit, offset)
       .then((items: Item[]) => res.json(items));
   }
+}
 
+export const getBarcodeItem = (req, res) => {
+  const barcode = req.params.barcode;
+  if (!barcode) return res.sendStatus(404);
+
+  itemService.getBarcodeItem(barcode)
+    .then((item: Item) => res.json(item));
 }

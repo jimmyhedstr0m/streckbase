@@ -24,7 +24,7 @@ export class ItemService {
 
   getItem(id: number): Promise<Item> {
     return this.itemRepository.getItem(id)
-      .then((dbItems: DBItem[]) => this.map(dbItems[0]));
+      .then((dbItem: DBItem) => this.map(dbItem));
   }
 
   getItems(limit: number, offset: number): Promise<Item[]> {
@@ -35,4 +35,8 @@ export class ItemService {
       .then((dbItems: DBItem[]) => dbItems.map<Item>((dbItem: DBItem) => this.map(dbItem)));
   }
 
+  getBarcodeItem(barcode: string): Promise<Item> {
+    return this.itemRepository.getBarcodeItem(barcode)
+      .then((dbItem: DBItem) => this.map(dbItem));
+  }
 }

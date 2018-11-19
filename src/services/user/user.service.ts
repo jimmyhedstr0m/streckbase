@@ -28,7 +28,7 @@ export class UserService {
 
   getUser(id: string): Promise<User> {
     return this.userRepository.getUser(id)
-      .then((dbUsers: DBUser[]) => this.map(dbUsers[0]));
+      .then((dbUser: DBUser) => this.map(dbUser));
   }
 
   getUsers(limit: number, offset: number): Promise<User[]> {
