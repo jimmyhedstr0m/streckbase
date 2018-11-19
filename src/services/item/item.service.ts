@@ -1,6 +1,6 @@
 import { Item } from "./item";
-import { Item as DBItem } from "../../repositories/item/item";
-import { ItemRepository } from "../../repositories/item/item.repository";
+import { Item as DBItem } from "./../../repositories/item/item";
+import { ItemRepository } from "./../../repositories/item/item.repository";
 
 export class ItemService {
   private itemRepository: ItemRepository;
@@ -18,7 +18,7 @@ export class ItemService {
       price: dbItem.price,
       volume: dbItem.volume,
       alcohol: dbItem.alcohol,
-      barcodes: []
+      barcodes: dbItem.codes ? dbItem.codes.split(",") : []
     }
   }
 

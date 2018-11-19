@@ -4,4 +4,5 @@ export interface Item {
   price: number;
   volume: number;
   alcohol: number;
+  codes: string;
 }
