@@ -7,7 +7,7 @@ export class PurchaseRepository extends BaseRepository {
     super();
   }
 
-  getPurchases(userId: string): Promise<Purchase[]> {
+  getPurchases(userId: string, limit: number, offset: number): Promise<Purchase[]> {
     return this.dbQuery(`
       SELECT Purchases.id, Purchases.item_id, Items.name, Items.price, Items.volume, Items.alcohol, Purchases.date, (
         SELECT group_concat(streckbase.Barcodes.code) AS codes
@@ -20,8 +20,9 @@ export class PurchaseRepository extends BaseRepository {
       WHERE Purchases.user_id = ?
       ORDER BY Purchases.id
       DESC
-      LIMIT 50`
-    , [userId]);
+      LIMIT ?
+      OFFSET ?`
+    , [userId, limit, offset]);
   }
 
 }

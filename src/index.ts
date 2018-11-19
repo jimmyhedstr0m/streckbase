@@ -24,6 +24,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/users/:id?", userController.getUsers);
+app.get("/users/:id/purchases", userController.getUserPurchases);
 app.get("/items/:id?", itemController.getItems);
 app.get("/test", (req, res) => {
   res.json({ok: "yes"});

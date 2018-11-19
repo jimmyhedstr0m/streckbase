@@ -27,30 +27,8 @@ export class UserService {
   }
 
   getUser(id: string): Promise<User> {
-    let user: User;
-
     return this.userRepository.getUser(id)
-      .then((dbUsers: DBUser[]) => {
-        user = this.map(dbUsers[0]);
-
-        if (!user) return null;
-        return this.purchaseRepository.getPurchases(id)
-      })
-      .then((purchases: Purchase[]) => {
-        user.purchases = purchases.map((purchase: Purchase) => <UserPurchase>({
-          id: purchase.id,
-          date: purchase.date,
-          item: <Item>({
-            id: purchase.item_id,
-            name: purchase.name,
-            price: purchase.price,
-            volume: purchase.volume,
-            alcohol: purchase.alcohol,
-            barcodes: purchase.codes ? purchase.codes.split(",") : []
-          })
-        }));
-        return user;
-      });
+      .then((dbUsers: DBUser[]) => this.map(dbUsers[0]));
   }
 
   getUsers(limit: number, offset: number): Promise<User[]> {
@@ -59,6 +37,36 @@ export class UserService {
 
     return this.userRepository.getUsers(limit, offset)
       .then((dbUsers: DBUser[]) => dbUsers.map<User>((dbUser: DBUser) => this.map(dbUser)));
+  }
+
+  getUserPurchases(id: string, limit: number, offset: number): Promise<User> {
+    let currentUser: User;
+    limit = typeof limit === "number" ? limit : 20;
+    offset = typeof offset === "number" ? offset : 0;
+
+    return this.getUser(id)
+    .then((user: User) => {
+      if (!user) return null;
+      currentUser = user;
+
+      return this.purchaseRepository.getPurchases(id, limit, offset)
+    })
+    .then((purchases: Purchase[]) => {
+      currentUser.purchases = purchases.map((purchase: Purchase) => <UserPurchase>({
+        id: purchase.id,
+        date: purchase.date,
+        item: <Item>({
+          id: purchase.item_id,
+          name: purchase.name,
+          price: purchase.price,
+          volume: purchase.volume,
+          alcohol: purchase.alcohol,
+          barcodes: purchase.codes ? purchase.codes.split(",") : []
+        })
+      }));
+
+      return currentUser;
+    });
   }
 
 }
