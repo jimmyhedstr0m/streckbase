@@ -25,6 +25,21 @@ export class PurchaseRepository extends BaseRepository {
     `, [userId, limit, offset]);
   }
 
+  getPurchase(purchaseId: number): Promise<Purchase> {
+    return this.dbQuery(`
+      SELECT Purchases.id, Purchases.item_id, Items.name, Items.price, Items.volume, Items.alcohol, Purchases.date, (
+        SELECT group_concat(streckbase.Barcodes.code) AS codes
+        FROM streckbase.Barcodes
+        WHERE streckbase.Barcodes.item_id = Purchases.item_id
+        GROUP BY Barcodes.item_id
+      ) AS codes
+      FROM Purchases
+      INNER JOIN Items ON Items.item_id = Purchases.item_id
+      WHERE Purchases.id = ?
+    `, [purchaseId])
+      .then((res: any[]) => res[0]);
+  }
+
   getPurchases(limit: number, offset: number): Promise<Purchase[]> {
     return this.dbQuery(`
       SELECT Purchases.id, Purchases.item_id, Items.name, Items.price, Items.volume, Items.alcohol, Purchases.date, (
