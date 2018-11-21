@@ -1,7 +1,7 @@
-export interface User {
-  user_id: string;
-  email: string;
-  firstname: string;
-  lastname: string;
-  debt: number;
+export class User {
+  user_id: string = null;
+  email: string = null;
+  firstname: string = null;
+  lastname: string = null;
+  debt: number = null;
 }

@@ -1,7 +1,7 @@
 import { Item } from "./../item/item";
 
-export interface Purchase {
-  id: number;
-  date: Date;
-  item: Item;
+export class Purchase {
+  id: number = null;
+  date: Date = null;
+  item: Item = null;
 }

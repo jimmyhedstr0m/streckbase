@@ -1,10 +1,10 @@
-export interface Purchase {
-  id: number;
-  date: Date;
-  item_id: number;
-  name: string;
-  price: number;
-  volume?: number;
-  alcohol?: number;
-  codes: string;
+export class Purchase {
+  id: number = null;
+  date: Date = null;
+  item_id: number = null;
+  name: string = null;
+  price: number = null;
+  volume?: number = null;
+  alcohol?: number = null;
+  codes: string = null;
 }

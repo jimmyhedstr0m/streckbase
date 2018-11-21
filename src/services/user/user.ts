@@ -1,10 +1,10 @@
 import { Purchase } from "./../purchase/purchase";
 
-export interface User {
-  id: string;
-  email?: string;
-  firstname: string;
-  lastname: string;
-  debt: number;
+export class User {
+  id: string = null;
+  email?: string = null;
+  firstname: string = null;
+  lastname: string = null;
+  debt: number = null;
   purchases?: Purchase[];
 }

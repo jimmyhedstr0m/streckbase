@@ -1,8 +1,8 @@
-export interface Item {
-  id: number;
-  name: string;
-  price: number;
-  volume?: number;
-  alcohol?: number;
-  barcodes: string[];
+export class Item {
+  id: number = null;
+  name: string = null;
+  price: number = null;
+  volume?: number = null;
+  alcohol?: number = null;
+  barcodes: string[] = null;
 }
