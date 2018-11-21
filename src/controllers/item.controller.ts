@@ -13,8 +13,8 @@ export const getItems = (req, res) => {
         res.json(item);
       });
   } else {
-    const limit = req.query.limit ? parseInt(req.query.limit) : null;
-    const offset = req.query.offset ? parseInt(req.query.offset) : null;
+    const offset = parseInt(req.query.offset, 10) || 0;
+    const limit = parseInt(req.query.limit, 10) || 20;
 
     itemService.getItems(limit, offset)
       .then((items: Item[]) => res.json(items));

@@ -12,39 +12,48 @@ import { subset } from "./../../helpers/subset";
 export class UserService {
   private userRepository: UserRepository;
   private purchaseRepository: PurchaseRepository;
-  private userMapper: Mapper<DBUser, User>;
-  private itemMapper: Mapper<DBItem, Item>;
-  private purchaseMapper: Mapper<DBPurchase, Purchase>;
 
   constructor() {
     this.userRepository = new UserRepository();
     this.purchaseRepository = new PurchaseRepository();
-    this.userMapper = new Mapper(DBUser, User);
-    this.itemMapper = new Mapper(DBItem, Item);
-    this.purchaseMapper = new Mapper(DBPurchase, Purchase);
+  }
+
+  private mapUser(dbUser: DBUser): User {
+    const userMapper: Mapper<DBUser, User> = new Mapper(DBUser, User);
+    return userMapper
+      .createMap(dbUser)
+      .forMember((dbUser) => <Partial<User>>{ id: dbUser.user_id })
+      .map();
+  }
+
+  private mapPurchase(dbPurchase: DBPurchase): Purchase {
+    const purchaseMapper: Mapper<DBPurchase, Purchase> = new Mapper(DBPurchase, Purchase);
+    const itemMapper: Mapper<DBItem, Item> = new Mapper(DBItem, Item);
+
+    return purchaseMapper
+      .createMap(dbPurchase)
+      .forMember((dbPurchase: DBPurchase) => {
+        const item: Item = itemMapper
+          .createMap(<DBItem>subset(DBItem, dbPurchase))
+          .forMember((dbItem: DBItem) => <Partial<Item>>{
+            id: dbItem.item_id,
+            barcodes: dbItem.codes ? dbItem.codes.split(",") : []
+          })
+          .map();
+
+        return <Partial<Purchase>>{ item };
+      })
+      .map();
   }
 
   getUser(id: string): Promise<User> {
     return this.userRepository.getUser(id)
-      .then((dbUser: DBUser) =>
-        this.userMapper
-          .createMap(dbUser)
-          .forMember((dbUser) => <Partial<User>>{ id: dbUser.user_id })
-          .map()
-      );
+      .then((dbUser: DBUser) => this.mapUser(dbUser));
   }
 
   getUsers(limit: number, offset: number): Promise<User[]> {
-    limit = typeof limit === "number" ? limit : 20;
-    offset = typeof offset === "number" ? offset : 0;
-
     return this.userRepository.getUsers(limit, offset)
-      .then((dbUsers: DBUser[]) => dbUsers.map<User>((dbUser: DBUser) =>
-        this.userMapper
-          .createMap(dbUser)
-          .forMember((dbUser) => <Partial<User>>{ id: dbUser.user_id })
-          .map()
-      ));
+      .then((dbUsers: DBUser[]) => dbUsers.map<User>((dbUser: DBUser) => this.mapUser(dbUser)));
   }
 
   getUserPurchase(userId: string, purchaseId: number): Promise<User> {
@@ -57,28 +66,14 @@ export class UserService {
 
         return this.purchaseRepository.getPurchase(purchaseId)
       })
-      .then((purchase: DBPurchase) => {
-        currentUser.purchases = <Purchase[]>[{
-          id: purchase.id,
-          date: purchase.date,
-          item: <Item>({
-            id: purchase.item_id,
-            name: purchase.name,
-            price: purchase.price,
-            volume: purchase.volume,
-            alcohol: purchase.alcohol,
-            barcodes: purchase.codes ? purchase.codes.split(",") : []
-          })
-        }];
-
+      .then((dbPurchase: DBPurchase) => {
+        currentUser.purchases = <Purchase[]>[this.mapPurchase(dbPurchase)];
         return currentUser;
       });
   }
 
   getUserPurchases(userId: string, limit: number, offset: number): Promise<User> {
     let currentUser: User;
-    limit = typeof limit === "number" ? limit : 20;
-    offset = typeof offset === "number" ? offset : 0;
 
     return this.getUser(userId)
       .then((user: User) => {
@@ -88,23 +83,8 @@ export class UserService {
         return this.purchaseRepository.getUserPurchases(userId, limit, offset)
       })
       .then((purchases: DBPurchase[]) => {
-        const getItem = (dbPurchase: DBPurchase) => {
-          return this.itemMapper
-            .createMap(<DBItem>subset(DBItem, dbPurchase))
-            .forMember((dbItem: DBItem) => <Partial<Item>>{
-              id: dbItem.item_id,
-              barcodes: dbItem.codes ? dbItem.codes.split(",") : []
-            })
-            .map();
-        }
-
-        currentUser.purchases = purchases
-          .map((dbPurchase: DBPurchase) =>
-            this.purchaseMapper
-              .createMap(dbPurchase)
-              .forMember((dbPurchase: DBPurchase) => (<Partial<Purchase>>{ item: getItem(dbPurchase) }))
-              .map()
-          );
+        currentUser.purchases = <Purchase[]>purchases
+          .map<Purchase>((dbPurchase: DBPurchase) => this.mapPurchase(dbPurchase));
 
         return currentUser;
       });

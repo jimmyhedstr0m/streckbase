@@ -1,10 +1,10 @@
 import { Item } from "./item";
 import { Item as DBItem } from "./../../repositories/item/item";
-import { ItemRepository } from "./../../repositories/item/item.repository";
+import { ItemRepository } from "./../../repositories/item/item.repository";
 
 export class ItemService {
   private itemRepository: ItemRepository;
-  
+
   constructor() {
     this.itemRepository = new ItemRepository();
   }
@@ -28,9 +28,6 @@ export class ItemService {
   }
 
   getItems(limit: number, offset: number): Promise<Item[]> {
-    limit = typeof limit === "number" ? limit : 20;
-    offset = typeof offset === "number" ? offset : 0;
-
     return this.itemRepository.getItems(limit, offset)
       .then((dbItems: DBItem[]) => dbItems.map<Item>((dbItem: DBItem) => this.map(dbItem)));
   }

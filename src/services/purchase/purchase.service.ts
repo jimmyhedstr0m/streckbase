@@ -1,36 +1,40 @@
-import { Purchase } from "./purchase";
-import { Purchase as DBPurchase } from "../../repositories/purchase/purchase";
-import { PurchaseRepository} from "./../../repositories/purchase/purchase.repository";
+import { Mapper } from "./../../helpers/mapper";
+import { subset } from "./../../helpers/subset";
+import { PurchaseRepository } from "./../../repositories/purchase/purchase.repository";
+import { Purchase } from "./../../services/purchase/purchase";
+import { Purchase as DBPurchase } from "./../../repositories/purchase/purchase";
+import { Item } from "./../item/item";
+import { Item as DBItem } from "./../../repositories/item/item";
 
 export class PurchaseService {
   private purchaseRepository: PurchaseRepository;
-  
+
   constructor() {
     this.purchaseRepository = new PurchaseRepository();
   }
 
-  private map(dbPurchase: DBPurchase): Purchase {
-    if (!dbPurchase) return null;
+  private mapPurchase(dbPurchase: DBPurchase): Purchase {
+    const purchaseMapper: Mapper<DBPurchase, Purchase> = new Mapper(DBPurchase, Purchase);
+    const itemMapper: Mapper<DBItem, Item> = new Mapper(DBItem, Item);
 
-    return {
-      id: dbPurchase.id,
-      date: dbPurchase.date,
-      item: {
-        id: dbPurchase.item_id,
-        name: dbPurchase.name,
-        price: dbPurchase.price,
-        volume: dbPurchase.volume,
-        alcohol: dbPurchase.alcohol,
-        barcodes: dbPurchase.codes ? dbPurchase.codes.split(",") : []
-      }
-    }
+    return purchaseMapper
+      .createMap(dbPurchase)
+      .forMember((dbPurchase: DBPurchase) => {
+        const item: Item = itemMapper
+          .createMap(<DBItem>subset(DBItem, dbPurchase))
+          .forMember((dbItem: DBItem) => <Partial<Item>>{
+            id: dbItem.item_id,
+            barcodes: dbItem.codes ? dbItem.codes.split(",") : []
+          })
+          .map();
+
+        return <Partial<Purchase>>{ item };
+      })
+      .map();
   }
 
   getPurchases(limit: number, offset: number): Promise<Purchase[]> {
-    limit = typeof limit === "number" ? limit : 20;
-    offset = typeof offset === "number" ? offset : 0;
-
     return this.purchaseRepository.getPurchases(limit, offset)
-      .then((dbPurchases: DBPurchase[]) => dbPurchases.map<Purchase>((dbPurchase: DBPurchase) => this.map(dbPurchase)));
+      .then((dbPurchases: DBPurchase[]) => dbPurchases.map<Purchase>((dbPurchase: DBPurchase) => this.mapPurchase(dbPurchase)));
   }
 }

@@ -13,8 +13,8 @@ export const getUsers = (req, res) => {
         res.json(user);
       });
   } else {
-    const limit = req.query.limit ? parseInt(req.query.limit) : null;
-    const offset = req.query.offset ? parseInt(req.query.offset) : null;
+    const offset = parseInt(req.query.offset, 10) || 0;
+    const limit = parseInt(req.query.limit, 10) || 20;
 
     userService.getUsers(limit, offset)
       .then((users: User[]) => res.json(users));
@@ -34,8 +34,8 @@ export const getUserPurchases = (req, res) => {
         res.json(user);
       });
   } else {
-    const offset = req.query.offset ? parseInt(req.query.offset) : null;
-    const limit = req.query.limit ? parseInt(req.query.limit) : null;
+    const offset = parseInt(req.query.offset, 10) || 0;
+    const limit = parseInt(req.query.limit, 10) || 20;
 
     userService.getUserPurchases(req.params.userId, limit, offset)
       .then((user: User) => res.json(user));
