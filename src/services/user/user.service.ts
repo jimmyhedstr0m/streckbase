@@ -47,17 +47,45 @@ export class UserService {
       ));
   }
 
-  getUserPurchases(id: string, limit: number, offset: number): Promise<User> {
+  getUserPurchase(userId: string, purchaseId: number): Promise<User> {
     let currentUser: User;
-    limit = typeof limit === "number" ? limit : 20;
-    offset = typeof offset === "number" ? offset : 0;
 
-    return this.getUser(id)
+    return this.getUser(userId)
       .then((user: User) => {
         if (!user) return null;
         currentUser = user;
 
-        return this.purchaseRepository.getUserPurchases(id, limit, offset)
+        return this.purchaseRepository.getPurchase(purchaseId)
+      })
+      .then((purchase: DBPurchase) => {
+        currentUser.purchases = <Purchase[]>[{
+          id: purchase.id,
+          date: purchase.date,
+          item: <Item>({
+            id: purchase.item_id,
+            name: purchase.name,
+            price: purchase.price,
+            volume: purchase.volume,
+            alcohol: purchase.alcohol,
+            barcodes: purchase.codes ? purchase.codes.split(",") : []
+          })
+        }];
+
+        return currentUser;
+      });
+  }
+
+  getUserPurchases(userId: string, limit: number, offset: number): Promise<User> {
+    let currentUser: User;
+    limit = typeof limit === "number" ? limit : 20;
+    offset = typeof offset === "number" ? offset : 0;
+
+    return this.getUser(userId)
+      .then((user: User) => {
+        if (!user) return null;
+        currentUser = user;
+
+        return this.purchaseRepository.getUserPurchases(userId, limit, offset)
       })
       .then((purchases: DBPurchase[]) => {
         const getItem = (dbPurchase: DBPurchase) => {
