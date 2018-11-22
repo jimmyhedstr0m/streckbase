@@ -1,3 +1,37 @@
+/*
+  Generic Mapper used to map one class to another.
+  Example:
+
+  class A {
+    id: number = 1;
+    random: string = "hello";
+  }
+
+  class B {
+    id: number = null;
+    text: string = null;
+  }
+  
+  const destination: B = new Mapper(A, B)
+    .createMap(new A())
+    .forMember((source: A) => {
+      text: source.random
+    })
+    .map();
+
+  console.log(destination); // logs: B { id: 1, text: hello }
+
+  The mapper will automatically map equal keys. In this case key "id",
+  as it appears in both classes.
+
+  The .forMember method is used to map one key to another. In this case we
+  map the value of key "random" to key "text". The result of the mapping
+  process will be a new instance of B with the values from A.
+  However, if non-matchin properties aren't manually mapped in .forMember
+  method, it will cause properties in destination class B to have null values
+  for non-matching keys.
+*/
+
 export class Mapper<T, U> {
   private mapped: Partial<U> = {};
   private source: T;
@@ -37,4 +71,3 @@ export class Mapper<T, U> {
     return destination;
   }
 }
-
