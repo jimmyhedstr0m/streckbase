@@ -1,7 +1,24 @@
 import { BaseRepository } from "../base.repository";
 import { Purchase } from "./purchase";
+import { User } from "./../user/user";
 
 export class PurchaseRepository extends BaseRepository {
+  private purchaseKeys: string = "Purchases.id, Purchases.item_id,  Purchases.date, Items.name, Items.price, Items.volume, Items.alcohol";
+  private userKeys: string = "Users.user_id, Users.email, Users.firstname, Users.lastname, Users.debt";
+  private itemsJoin: string = "INNER JOIN Items ON Items.item_id = Purchases.item_id";
+  private source: string = "FROM Purchases";
+  private barcodeQuery: string = `
+    ( SELECT group_concat(streckbase.Barcodes.code) AS codes
+      FROM streckbase.Barcodes
+      WHERE streckbase.Barcodes.item_id = Purchases.item_id
+      GROUP BY Barcodes.item_id
+    ) AS codes`;
+  private order: string = `
+    ORDER BY Purchases.id
+    DESC
+    LIMIT ?
+    OFFSET ?
+  `;
 
   constructor() {
     super();
@@ -9,32 +26,19 @@ export class PurchaseRepository extends BaseRepository {
 
   getUserPurchases(userId: string, limit: number, offset: number): Promise<Purchase[]> {
     return this.dbQuery(`
-      SELECT Purchases.id, Purchases.item_id, Items.name, Items.price, Items.volume, Items.alcohol, Purchases.date, (
-        SELECT group_concat(streckbase.Barcodes.code) AS codes
-        FROM streckbase.Barcodes
-        WHERE streckbase.Barcodes.item_id = Purchases.item_id
-        GROUP BY Barcodes.item_id
-      ) AS codes
-      FROM Purchases
-      INNER JOIN Items ON Items.item_id = Purchases.item_id
+      SELECT ${this.purchaseKeys}, ${this.barcodeQuery}
+      ${this.source}
+      ${this.itemsJoin}
       WHERE Purchases.user_id = ?
-      ORDER BY Purchases.id
-      DESC
-      LIMIT ?
-      OFFSET ?
+      ${this.order}
     `, [userId, limit, offset]);
   }
 
   getPurchase(purchaseId: number): Promise<Purchase> {
     return this.dbQuery(`
-      SELECT Purchases.id, Purchases.item_id, Items.name, Items.price, Items.volume, Items.alcohol, Purchases.date, (
-        SELECT group_concat(streckbase.Barcodes.code) AS codes
-        FROM streckbase.Barcodes
-        WHERE streckbase.Barcodes.item_id = Purchases.item_id
-        GROUP BY Barcodes.item_id
-      ) AS codes
-      FROM Purchases
-      INNER JOIN Items ON Items.item_id = Purchases.item_id
+      SELECT ${this.purchaseKeys}, ${this.barcodeQuery}
+      ${this.source}
+      ${this.itemsJoin}
       WHERE Purchases.id = ?
     `, [purchaseId])
       .then((res: any[]) => res[0]);
@@ -42,18 +46,20 @@ export class PurchaseRepository extends BaseRepository {
 
   getPurchases(limit: number, offset: number): Promise<Purchase[]> {
     return this.dbQuery(`
-      SELECT Purchases.id, Purchases.item_id, Items.name, Items.price, Items.volume, Items.alcohol, Purchases.date, (
-        SELECT group_concat(streckbase.Barcodes.code) AS codes
-        FROM streckbase.Barcodes
-        WHERE streckbase.Barcodes.item_id = Purchases.item_id
-        GROUP BY Barcodes.item_id
-      ) AS codes
-      FROM Purchases
-      INNER JOIN Items ON Items.item_id = Purchases.item_id
-      ORDER BY Purchases.id
-      DESC
-      LIMIT ?
-      OFFSET ?
+      SELECT ${this.purchaseKeys}, ${this.barcodeQuery}
+      ${this.source}
+      ${this.itemsJoin}
+      ${this.order}
+    `, [limit, offset]);
+  }
+
+  getFeedPurchases(limit: number, offset: number): Promise<Purchase[] & User[]> {
+    return this.dbQuery(`
+      SELECT ${this.userKeys}, ${this.purchaseKeys}, ${this.barcodeQuery}
+      ${this.source}
+      ${this.itemsJoin}
+      INNER JOIN Users ON Users.user_id = Purchases.user_id
+      ${this.order}
     `, [limit, offset]);
   }
 

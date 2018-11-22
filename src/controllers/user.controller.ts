@@ -40,5 +40,12 @@ export const getUserPurchases = (req, res) => {
     userService.getUserPurchases(req.params.userId, limit, offset)
       .then((user: User) => res.json(user));
   }
+}
 
+export const getFeedPurchases = (req, res) => {
+  const offset = parseInt(req.query.offset, 10) || 0;
+  const limit = parseInt(req.query.limit, 10) || 20;
+
+  userService.getFeedPurchases(limit, offset)
+    .then((feedPurchases: User[]) => res.json(feedPurchases));
 }

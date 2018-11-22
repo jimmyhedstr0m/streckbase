@@ -90,4 +90,16 @@ export class UserService {
       });
   }
 
+  getFeedPurchases(limit: number, offset: number): Promise<User[]> {
+    return this.purchaseRepository.getFeedPurchases(limit, offset)
+      .then((results: DBPurchase[] & DBUser[]) => {
+        return results.map((result: DBPurchase & DBUser) => {
+          const user: User = this.mapUser(subset(DBUser, result));
+          user.purchases = [this.mapPurchase(subset(DBPurchase, result))];
+
+          return user;
+        });
+      });
+  }
+
 }

@@ -24,6 +24,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/users/purchases", userController.getFeedPurchases);
 app.get("/users/:id?", userController.getUsers);
 app.get("/users/:userId/purchases/:purchaseId?", userController.getUserPurchases);
 app.get("/items/:id?", itemController.getItems);
