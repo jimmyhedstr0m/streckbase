@@ -5,8 +5,8 @@ import { User } from "./../user/user";
 export class PurchaseRepository extends BaseRepository {
   private purchaseKeys: string = "Purchases.id, Purchases.item_id,  Purchases.date, Items.name, Items.price, Items.volume, Items.alcohol";
   private userKeys: string = "Users.user_id, Users.email, Users.firstname, Users.lastname, Users.debt";
-  private itemsJoin: string = "INNER JOIN Items ON Items.item_id = Purchases.item_id";
   private source: string = "FROM Purchases";
+  private itemsJoin: string = "INNER JOIN Items ON Items.item_id = Purchases.item_id";
   private barcodeQuery: string = `
     ( SELECT group_concat(streckbase.Barcodes.code) AS codes
       FROM streckbase.Barcodes

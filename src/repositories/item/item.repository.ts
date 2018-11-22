@@ -2,6 +2,9 @@ import { BaseRepository } from "./../base.repository";
 import { Item } from "./item";
 
 export class ItemRepository extends BaseRepository {
+  private itemKeys: string = "Items.item_id, name, price, volume, alcohol, group_concat(code) AS codes";
+  private itemSource: string = "FROM Items";
+  private barcodeJoin: string = "LEFT JOIN Barcodes ON Barcodes.item_id = Items.item_id";
 
   constructor() {
     super();
@@ -11,14 +14,14 @@ export class ItemRepository extends BaseRepository {
     if (!id && id !== 0) return null;
 
     return this.dbQuery(`
-      SELECT Items.item_id, name, price, volume, alcohol, group_concat(code) AS codes
-      FROM Items
-      LEFT JOIN Barcodes ON Barcodes.item_id = Items.item_id
+      SELECT ${this.itemKeys}
+      ${this.itemSource}
+      ${this.barcodeJoin}
       WHERE Items.item_id = ?
       GROUP BY Items.item_id
       ORDER BY Items.item_id
     `, [id])
-    .then((res: any[]) => res[0]);
+      .then((res: any[]) => res[0]);
   }
 
   getBarcodeItem(barcode: string): Promise<Item> {
@@ -30,9 +33,9 @@ export class ItemRepository extends BaseRepository {
 
   getItems(limit: number, offset: number): Promise<Item[]> {
     return this.dbQuery(`
-      SELECT Items.item_id, name, price, volume, alcohol, group_concat(code) AS codes
-      FROM Items
-      LEFT JOIN Barcodes ON Barcodes.item_id = Items.item_id
+      SELECT ${this.itemKeys}
+      ${this.itemSource}
+      ${this.barcodeJoin}
       GROUP BY Items.item_id
       ORDER BY Items.item_id
       LIMIT ?
