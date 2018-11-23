@@ -27,8 +27,12 @@ app.use((req, res, next) => {
 app.get("/users/purchases", userController.getFeedPurchases);
 app.get("/users/:id?", userController.getUsers);
 app.get("/users/:userId/purchases/:purchaseId?", userController.getUserPurchases);
+
+app.post("/users/:userId/purchases", userController.createPurchase);
+
 app.get("/items/:id?", itemController.getItems);
 app.get("/items/barcodes/:barcode", itemController.getBarcodeItem);
+
 app.get("/purchases", purchaseController.getPurchases);
 app.get("/test", (req, res) => {
   res.json({ ok: "yes" });

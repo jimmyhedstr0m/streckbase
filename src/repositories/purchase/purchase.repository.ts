@@ -44,6 +44,19 @@ export class PurchaseRepository extends BaseRepository {
       .then((res: any[]) => res[0]);
   }
 
+  getLatestUserPurchase(userId: string): Promise<Purchase> {
+    return this.dbQuery(`
+      SELECT ${this.purchaseKeys}, ${this.barcodeQuery}
+      ${this.source}
+      ${this.itemsJoin}
+      WHERE Purchases.user_id = ?
+      ORDER BY Purchases.id
+      DESC
+      LIMIT 1
+    `, [userId])
+      .then((res: any[]) => res[0]);
+  }
+
   getPurchases(limit: number, offset: number): Promise<Purchase[]> {
     return this.dbQuery(`
       SELECT ${this.purchaseKeys}, ${this.barcodeQuery}
@@ -63,4 +76,9 @@ export class PurchaseRepository extends BaseRepository {
     `, [limit, offset]);
   }
 
+  createPurchase(userId: string, itemId: number): Promise<any> {
+    return this.dbQuery(`
+      INSERT INTO Purchases (user_id, item_id, date) VALUES (?, ?, ?)
+    `, [userId, itemId, new Date().toJSON()]);
+  }
 }

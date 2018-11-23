@@ -22,4 +22,10 @@ export class UserRepository extends BaseRepository {
     `, [limit, offset]);
   }
 
+  updateDebt(id: string, debt: number): Promise<any> {
+    return this.dbQuery(`
+      UPDATE Users SET debt = ?
+      WHERE user_id = ?
+    `, [debt, id]);
+  }
 }

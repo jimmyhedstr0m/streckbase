@@ -5,6 +5,7 @@ import { UserRepository } from "./../../repositories/user/user.repository";
 import { PurchaseRepository } from "./../../repositories/purchase/purchase.repository";
 import { Purchase } from "./../../services/purchase/purchase";
 import { Purchase as DBPurchase } from "./../../repositories/purchase/purchase";
+import { ItemRepository } from "./../../repositories/item/item.repository";
 import { Item } from "./../item/item";
 import { Item as DBItem } from "./../../repositories/item/item";
 import { subset } from "./../../helpers/subset";
@@ -12,10 +13,12 @@ import { subset } from "./../../helpers/subset";
 export class UserService {
   private userRepository: UserRepository;
   private purchaseRepository: PurchaseRepository;
+  private itemRepository: ItemRepository;
 
   constructor() {
     this.userRepository = new UserRepository();
     this.purchaseRepository = new PurchaseRepository();
+    this.itemRepository = new ItemRepository();
   }
 
   private mapUser(dbUser: DBUser): User {
@@ -42,6 +45,17 @@ export class UserService {
           .map();
 
         return <Partial<Purchase>>{ item };
+      })
+      .map();
+  }
+
+  private mapItem(dbItem: DBItem): Item {
+    const itemMapper: Mapper<DBItem, Item> = new Mapper(DBItem, Item);
+    return itemMapper
+      .createMap(dbItem)
+      .forMember((dbItem) => <Partial<Item>>{
+        id: dbItem.item_id,
+        barcodes: dbItem.codes ? dbItem.codes.split(",") : []
       })
       .map();
   }
@@ -87,6 +101,39 @@ export class UserService {
           .map<Purchase>((dbPurchase: DBPurchase) => this.mapPurchase(dbPurchase));
 
         return currentUser;
+      });
+  }
+
+  createPurchase(userId: string, item: Item): Promise<User> {
+    if (!(userId && item && item.id)) return null;
+
+    let user: User;
+    return this.getUser(userId)
+      .then((u: User) => {
+        user = u;
+        return this.itemRepository.getItem(item.id)
+      })
+      .then((dbItem: DBItem) => {
+        const realItem = new Mapper<DBItem, Item>(DBItem, Item)
+          .createMap(dbItem)
+          .forMember((dbItem) => <Partial<Item>>{
+            id: dbItem.item_id,
+            barcodes: dbItem.codes ? dbItem.codes.split(",") : []
+          })
+          .map();
+
+        user.debt += realItem.price;
+        return this.purchaseRepository.createPurchase(userId, item.id);
+      })
+      .then(() => {
+        return this.userRepository.updateDebt(userId, user.debt);
+      })
+      .then(() => {
+        return this.purchaseRepository.getLatestUserPurchase(userId);
+      })
+      .then((dbPurchase: DBPurchase) => {
+        user.purchases = <Purchase[]>[this.mapPurchase(dbPurchase)];
+        return user;
       });
   }
 

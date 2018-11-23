@@ -1,10 +1,11 @@
 import { UserService } from "./../services/user/user.service";
 import { User } from "./../services/user/user";
+import { Item } from "./../services/item/item";
 
 const userService = new UserService();
 
 export const getUsers = (req, res) => {
-  const id = req.params.id;
+  const id: string = req.params.id;
 
   if (id !== undefined) {
     userService.getUser(id)
@@ -38,8 +39,17 @@ export const getUserPurchases = (req, res) => {
     const limit = parseInt(req.query.limit, 10) || 20;
 
     userService.getUserPurchases(req.params.userId, limit, offset)
-      .then((user: User) => res.json(user));
+      .then((userPurchase: User) => res.json(userPurchase));
   }
+}
+
+export const createPurchase = (req, res) => {
+  const userId: string = req.params.userId;
+  const item: Item = req.body;
+  if (userId === undefined || !item) return res.sendStatus(400);
+
+  userService.createPurchase(userId, item)
+    .then((userPurchase: User) => res.json(userPurchase));
 }
 
 export const getFeedPurchases = (req, res) => {
