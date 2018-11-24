@@ -6,5 +6,6 @@ export class User {
   firstname: string = null;
   lastname: string = null;
   debt: number = null;
+  lobare: boolean = null;
   purchases?: Purchase[];
 }

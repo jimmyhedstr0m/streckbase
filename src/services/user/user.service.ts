@@ -25,7 +25,10 @@ export class UserService {
     const userMapper: Mapper<DBUser, User> = new Mapper(DBUser, User);
     return userMapper
       .createMap(dbUser)
-      .forMember((dbUser) => <Partial<User>>{ id: dbUser.user_id })
+      .forMember((dbUser) => <Partial<User>>{
+        id: dbUser.user_id,
+        lobare: !!dbUser.lobare
+      })
       .map();
   }
 

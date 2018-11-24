@@ -2,14 +2,14 @@ import { BaseRepository } from "./../base.repository";
 import { User } from "./user";
 
 export class UserRepository extends BaseRepository {
-  private userKeys: string = "user_id, firstname, lastname, email, debt";
+  private userKeys: string = "user_id, firstname, lastname, email, debt, lobare";
 
   constructor() {
     super();
   }
 
   getUser(id: string): Promise<User> {
-    return this.dbQuery(`SELECT ${this.userKeys}  FROM Users WHERE user_id=?`, [id])
+    return this.dbQuery(`SELECT ${this.userKeys} FROM Users WHERE user_id=?`, [id])
       .then((res: any[]) => res[0]);
   }
 
