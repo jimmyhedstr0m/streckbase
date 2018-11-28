@@ -8,7 +8,7 @@ import { Purchase as DBPurchase } from "./../../repositories/purchase/purchase";
 import { ItemRepository } from "./../../repositories/item/item.repository";
 import { Item } from "./../item/item";
 import { Item as DBItem } from "./../../repositories/item/item";
-import { subset } from "./../../helpers/subset";
+import { subset } from "./../../helpers/utils";
 
 export class UserService {
   private userRepository: UserRepository;

@@ -4,7 +4,7 @@ import { Item } from "./../services/item/item";
 const itemService = new ItemService();
 
 export const getItems = (req, res) => {
-  const id = req.params.id;
+  const id: number = req.params.id;
 
   if (id !== undefined) {
     itemService.getItem(id)
@@ -22,7 +22,7 @@ export const getItems = (req, res) => {
 }
 
 export const getBarcodeItem = (req, res) => {
-  const barcode = req.params.barcode;
+  const barcode: string = req.params.barcode;
   if (!barcode) return res.sendStatus(404);
 
   itemService.getBarcodeItem(barcode)

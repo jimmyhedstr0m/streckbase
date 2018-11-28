@@ -5,15 +5,15 @@ import path from "path";
 
 const app = express();
 
-dotenv.load({ path: ".env.dev" });
+dotenv.load({ path: ".env" });
 
 import * as userController from "./controllers/user.controller";
 import * as itemController from "./controllers/item.controller";
 import * as purchaseController from "./controllers/purchase.controller";
+import * as systembolagetController from "./controllers/systembolaget.controller";
 
 app.set("port", process.env.PORT || 8080);
 app.set("json spaces", 2);
-app.use(express.static(path.join(__dirname, "public")));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,6 +24,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.static(path.join(__dirname, "public")));
+
 app.get("/users/purchases", userController.getFeedPurchases);
 app.get("/users/:id?", userController.getUsers);
 app.get("/users/:userId/purchases/:purchaseId?", userController.getUserPurchases);
@@ -32,6 +34,9 @@ app.post("/users/:userId/purchases", userController.createPurchase);
 
 app.get("/items/:id?", itemController.getItems);
 app.get("/items/barcodes/:barcode", itemController.getBarcodeItem);
+
+app.get("/systembolaget", systembolagetController.searchItem);
+app.get("/systembolaget/image", systembolagetController.getImage);
 
 app.get("/purchases", purchaseController.getPurchases);
 app.get("/test", (req, res) => {
