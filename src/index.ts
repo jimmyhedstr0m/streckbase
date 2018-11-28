@@ -26,20 +26,20 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/users/purchases", userController.getFeedPurchases);
-app.get("/users/:id?", userController.getUsers);
-app.get("/users/:userId/purchases/:purchaseId?", userController.getUserPurchases);
+app.get("/api/users/purchases", userController.getFeedPurchases);
+app.get("/api/users/:id?", userController.getUsers);
+app.get("/api/users/:userId/purchases/:purchaseId?", userController.getUserPurchases);
 
-app.post("/users/:userId/purchases", userController.createPurchase);
+app.post("/api/users/:userId/purchases", userController.createPurchase);
 
-app.get("/items/:id?", itemController.getItems);
-app.get("/items/barcodes/:barcode", itemController.getBarcodeItem);
+app.get("/api/items/:id?", itemController.getItems);
+app.get("/api/items/barcodes/:barcode", itemController.getBarcodeItem);
 
-app.get("/systembolaget", systembolagetController.searchItem);
-app.get("/systembolaget/image", systembolagetController.getImage);
+app.get("/api/systembolaget", systembolagetController.searchItem);
+app.get("/api/systembolaget/image", systembolagetController.getImage);
 
-app.get("/purchases", purchaseController.getPurchases);
-app.get("/test", (req, res) => {
+app.get("/api/purchases", purchaseController.getPurchases);
+app.get("/api/test", (req, res) => {
   res.json({ ok: "yes" });
 })
 
