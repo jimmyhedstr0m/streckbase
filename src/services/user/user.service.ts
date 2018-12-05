@@ -23,6 +23,8 @@ export class UserService {
 
   private mapUser(dbUser: DBUser): User {
     const userMapper: Mapper<DBUser, User> = new Mapper(DBUser, User);
+    if (!dbUser) return null;
+
     return userMapper
       .createMap(dbUser)
       .forMember((dbUser) => <Partial<User>>{
