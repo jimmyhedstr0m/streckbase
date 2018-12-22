@@ -24,7 +24,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/public", express.static(path.join(__dirname, "public")));
+app.use("/api/static", express.static(path.join(__dirname, "public")));
 
 app.get("/api/users/purchases", userController.getFeedPurchases);
 app.get("/api/users/:id?", userController.getUsers);
