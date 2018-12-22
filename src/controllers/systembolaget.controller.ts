@@ -6,10 +6,10 @@ import { SystembolagetItem } from "./../services/systembolaget/systembolaget-ite
 const systembolagetService = new SystembolagetService();
 
 export const searchItem = (req, res) => {
-  const query: string = req.query.q;
-  if (!query) return res.sendStatus(400);
+  const article: number = req.query.q;
+  if (!article) return res.sendStatus(400);
 
-  systembolagetService.searchItem(query)
+  systembolagetService.searchItem(article)
     .then((item: SystembolagetItem) => res.send(item));
 }
 

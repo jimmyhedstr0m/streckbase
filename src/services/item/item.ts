@@ -5,4 +5,5 @@ export class Item {
   volume?: number = null;
   alcohol?: number = null;
   barcodes: string[] = null;
+  imageUrl: string = null;
 }

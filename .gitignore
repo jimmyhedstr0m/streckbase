@@ -17,6 +17,7 @@ tmp
 .npm
 
 dist
+public
 
 # API keys and secrets
 .env*
