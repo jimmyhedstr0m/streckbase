@@ -41,6 +41,8 @@ export class UserService {
     return purchaseMapper
       .createMap(dbPurchase)
       .forMember((dbPurchase: DBPurchase) => {
+        if (!dbPurchase) return null;
+
         const item: Item = itemMapper
           .createMap(<DBItem>subset(DBItem, dbPurchase))
           .forMember((dbItem: DBItem) => <Partial<Item>>{
@@ -50,17 +52,6 @@ export class UserService {
           .map();
 
         return <Partial<Purchase>>{ item };
-      })
-      .map();
-  }
-
-  private mapItem(dbItem: DBItem): Item {
-    const itemMapper: Mapper<DBItem, Item> = new Mapper(DBItem, Item);
-    return itemMapper
-      .createMap(dbItem)
-      .forMember((dbItem) => <Partial<Item>>{
-        id: dbItem.item_id,
-        barcodes: dbItem.codes ? dbItem.codes.split(",") : []
       })
       .map();
   }
@@ -86,6 +77,7 @@ export class UserService {
         return this.purchaseRepository.getPurchase(purchaseId)
       })
       .then((dbPurchase: DBPurchase) => {
+        if (!dbPurchase) return null;
         currentUser.purchases = <Purchase[]>[this.mapPurchase(dbPurchase)];
         return currentUser;
       });
@@ -153,5 +145,21 @@ export class UserService {
         });
       });
   }
+
+  deleteUserPurchase(userId: string, purchaseId: number): Promise<any> {
+    let price: number;
+    let debt: number;
+
+    return this.userRepository.getUser(userId)
+      .then((user: DBUser) => {
+        debt = user.debt;
+        return this.purchaseRepository.getPurchase(purchaseId);
+      })
+      .then((dbPurchase: DBPurchase) => {
+        price = dbPurchase.price;
+        return this.purchaseRepository.deletePurchase(purchaseId)
+      })
+      .then(() => this.userRepository.updateDebt(userId, debt - price));
+  };
 
 }

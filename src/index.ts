@@ -29,6 +29,7 @@ app.use("/api/static", express.static(path.join(__dirname, "public")));
 app.get("/api/users/purchases", userController.getFeedPurchases);
 app.get("/api/users/:id?", userController.getUsers);
 app.get("/api/users/:userId/purchases/:purchaseId?", userController.getUserPurchases);
+app.delete("/api/users/:userId/purchases/:purchaseId", userController.deleteUserPurchase)
 
 app.post("/api/users/:userId/purchases", userController.createPurchase);
 

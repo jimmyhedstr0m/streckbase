@@ -59,3 +59,11 @@ export const getFeedPurchases = (req, res) => {
   userService.getFeedPurchases(limit, offset)
     .then((feedPurchases: User[]) => res.json(feedPurchases));
 }
+
+export const deleteUserPurchase = (req, res) => {
+  const userId: string = req.params.userId;
+  const purchaseId: number = req.params.purchaseId;
+
+  userService.deleteUserPurchase(userId, purchaseId)
+    .then(() => res.sendStatus(202));
+}

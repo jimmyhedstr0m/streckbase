@@ -81,4 +81,10 @@ export class PurchaseRepository extends BaseRepository {
       INSERT INTO Purchases (user_id, item_id, date) VALUES (?, ?, ?)
     `, [userId, itemId, new Date().toJSON()]);
   }
+
+  deletePurchase(purchaseId: number): Promise<any> {
+    return this.dbQuery(`
+      DELETE FROM Purchases WHERE Purchases.id = ?
+    `, [purchaseId]);
+  }
 }
