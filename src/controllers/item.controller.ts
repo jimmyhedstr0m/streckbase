@@ -26,5 +26,8 @@ export const getBarcodeItem = (req, res) => {
   if (!barcode) return res.sendStatus(404);
 
   itemService.getBarcodeItem(barcode)
-    .then((item: Item) => res.json(item));
+    .then((item: Item) => {
+      if (!item) return res.sendStatus(404);
+      res.json(item);
+    });
 }

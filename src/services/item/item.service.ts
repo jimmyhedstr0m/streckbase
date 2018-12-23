@@ -18,6 +18,8 @@ export class ItemService {
   }
 
   private mapItem(dbItem: DBItem): Item {
+    if (!dbItem) return null;
+
     const itemMapper: Mapper<DBItem, Item> = new Mapper(DBItem, Item);
     return itemMapper
       .createMap(dbItem)
