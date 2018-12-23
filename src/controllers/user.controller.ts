@@ -65,5 +65,5 @@ export const deleteUserPurchase = (req, res) => {
   const purchaseId: number = req.params.purchaseId;
 
   userService.deleteUserPurchase(userId, purchaseId)
-    .then(() => res.sendStatus(202));
+    .then(() => res.status(202).json({}));
 }
