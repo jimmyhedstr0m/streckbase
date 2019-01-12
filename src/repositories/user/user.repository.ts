@@ -1,5 +1,6 @@
 import { BaseRepository } from "./../base.repository";
 import { User } from "./user";
+import { User as APIUser } from "./../../services/user/user";
 
 export class UserRepository extends BaseRepository {
   private userKeys: string = "user_id, firstname, lastname, email, debt, lobare";
@@ -27,5 +28,11 @@ export class UserRepository extends BaseRepository {
       UPDATE Users SET debt = ?
       WHERE user_id = ?
     `, [debt, id]);
+  }
+
+  createUser(user: APIUser): Promise<any> {
+    return this.dbQuery(`
+      INSERT INTO Users (user_id, email, firstname, lastname, debt, lobare) VALUES (?, ?, ?, ?, ?, ?)
+    `, [user.id, user.email, user.firstname, user.lastname, 0, user.lobare]);
   }
 }

@@ -101,6 +101,14 @@ export class UserService {
       });
   }
 
+  createUser(user: User): Promise<User> {
+    return this.userRepository.createUser(user)
+      .then(() => {
+        user.debt = 0;
+        return user;
+      });
+  }
+
   createPurchase(userId: string, item: Item): Promise<User> {
     if (!(userId && item && item.id)) return null;
 
@@ -156,10 +164,11 @@ export class UserService {
         return this.purchaseRepository.getPurchase(purchaseId);
       })
       .then((dbPurchase: DBPurchase) => {
+        if (!dbPurchase) throw new Error("Item not found");
         price = dbPurchase.price;
         return this.purchaseRepository.deletePurchase(purchaseId)
       })
-      .then(() => this.userRepository.updateDebt(userId, debt - price));
+      .then(() => this.userRepository.updateDebt(userId, debt - price))
   };
 
 }

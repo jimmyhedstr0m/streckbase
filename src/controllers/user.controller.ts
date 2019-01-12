@@ -43,6 +43,16 @@ export const getUserPurchases = (req, res) => {
   }
 }
 
+export const createUser = (req, res) => {
+  if (!req.body) return res.sendStatus(400);
+
+  userService.createUser(req.body)
+    .then((user: User) => {
+      if (!user) return res.sendStatus(404);
+      res.json(user);
+    }).catch(() => res.status(409).json({}));
+}
+
 export const createPurchase = (req, res) => {
   const userId: string = req.params.userId;
   const item: Item = req.body;
@@ -65,5 +75,6 @@ export const deleteUserPurchase = (req, res) => {
   const purchaseId: number = req.params.purchaseId;
 
   userService.deleteUserPurchase(userId, purchaseId)
-    .then(() => res.status(202).json({}));
+    .then(() => res.status(202).json({}))
+    .catch(() => res.status(410).json({}));
 }
