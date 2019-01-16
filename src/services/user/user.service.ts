@@ -109,6 +109,11 @@ export class UserService {
       });
   }
 
+  updateUser(user: User): Promise<User> {
+    return this.userRepository.updateUser(user)
+      .then(() => this.getUser(user.id));
+  }
+
   createPurchase(userId: string, item: Item): Promise<User> {
     if (!(userId && item && item.id)) return null;
 

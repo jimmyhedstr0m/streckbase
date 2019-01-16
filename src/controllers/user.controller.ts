@@ -48,9 +48,18 @@ export const createUser = (req, res) => {
 
   userService.createUser(req.body)
     .then((user: User) => {
+      res.status(201).json(user);
+    }).catch(() => res.status(409).json({}));
+}
+
+export const updateUser = (req, res) => {
+  if (!req.body) return res.sendStatus(400);
+
+  userService.updateUser(req.body)
+    .then((user: User) => {
       if (!user) return res.sendStatus(404);
       res.json(user);
-    }).catch(() => res.status(409).json({}));
+    });
 }
 
 export const createPurchase = (req, res) => {

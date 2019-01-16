@@ -35,4 +35,10 @@ export class UserRepository extends BaseRepository {
       INSERT INTO Users (user_id, email, firstname, lastname, debt, lobare) VALUES (?, ?, ?, ?, ?, ?)
     `, [user.id, user.email, user.firstname, user.lastname, 0, user.lobare]);
   }
+
+  updateUser(user: APIUser): Promise<any> {
+    return this.dbQuery(`
+      UPDATE Users SET email=?, debt=?, lobare=? WHERE user_id=?
+    `, [user.email, user.debt, user.lobare, user.id]);
+  }
 }
