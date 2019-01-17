@@ -29,7 +29,8 @@ export class UserService {
       .createMap(dbUser)
       .forMember((dbUser) => <Partial<User>>{
         id: dbUser.user_id,
-        lobare: !!dbUser.lobare
+        lobare: !!dbUser.lobare,
+        admin: !!dbUser.admin
       })
       .map();
   }

@@ -4,5 +4,6 @@ export class User {
   firstname: string = null;
   lastname: string = null;
   debt: number = null;
-  lobare: number = null;
+  lobare: boolean = null;
+  admin: boolean = null;
 }

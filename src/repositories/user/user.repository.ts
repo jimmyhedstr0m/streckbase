@@ -3,7 +3,7 @@ import { User } from "./user";
 import { User as APIUser } from "./../../services/user/user";
 
 export class UserRepository extends BaseRepository {
-  private userKeys: string = "user_id, firstname, lastname, email, debt, lobare";
+  private userKeys: string = "user_id, firstname, lastname, email, debt, lobare, admin";
 
   constructor() {
     super();
@@ -32,13 +32,13 @@ export class UserRepository extends BaseRepository {
 
   createUser(user: APIUser): Promise<any> {
     return this.dbQuery(`
-      INSERT INTO Users (user_id, email, firstname, lastname, debt, lobare) VALUES (?, ?, ?, ?, ?, ?)
-    `, [user.id, user.email, user.firstname, user.lastname, 0, user.lobare]);
+      INSERT INTO Users (${this.userKeys}) VALUES (?, ?, ?, ?, ?, ?, ?)
+    `, [user.id, user.firstname, user.lastname, user.email, 0, user.lobare, user.admin]);
   }
 
   updateUser(user: APIUser): Promise<any> {
     return this.dbQuery(`
-      UPDATE Users SET email=?, debt=?, lobare=? WHERE user_id=?
-    `, [user.email, user.debt, user.lobare, user.id]);
+      UPDATE Users SET email=?, debt=?, lobare=?, admin=? WHERE user_id=?
+    `, [user.email, user.debt, user.lobare, user.admin, user.id]);
   }
 }
