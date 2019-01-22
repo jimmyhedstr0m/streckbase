@@ -3,22 +3,6 @@ import { Purchase } from "./purchase";
 import { User } from "./../user/user";
 
 export class PurchaseRepository extends BaseRepository {
-  private purchaseKeys: string = "Purchases.id, Purchases.item_id,  Purchases.date, Items.name, Items.price, Items.volume, Items.alcohol";
-  private userKeys: string = "Users.user_id, Users.email, Users.firstname, Users.lastname, Users.debt, Users.lobare";
-  private source: string = "FROM Purchases";
-  private itemsJoin: string = "INNER JOIN Items ON Items.item_id = Purchases.item_id";
-  private barcodeQuery: string = `
-    ( SELECT group_concat(streckbase.Barcodes.code) AS codes
-      FROM streckbase.Barcodes
-      WHERE streckbase.Barcodes.item_id = Purchases.item_id
-      GROUP BY Barcodes.item_id
-    ) AS codes`;
-  private order: string = `
-    ORDER BY Purchases.id
-    DESC
-    LIMIT ?
-    OFFSET ?
-  `;
 
   constructor() {
     super();
@@ -26,31 +10,65 @@ export class PurchaseRepository extends BaseRepository {
 
   getUserPurchases(userId: string, limit: number, offset: number): Promise<Purchase[]> {
     return this.dbQuery(`
-      SELECT ${this.purchaseKeys}, ${this.barcodeQuery}
-      ${this.source}
-      ${this.itemsJoin}
-      WHERE Purchases.user_id = ?
-      ${this.order}
+      SELECT p1.id, p1.item_id, p1.date, i.name, i.price, i.volume, i.alcohol,
+      (
+        SELECT group_concat(Barcodes.code) AS codes
+        FROM Barcodes
+        WHERE Barcodes.item_id = p1.item_id
+        GROUP BY Barcodes.item_id
+      ) AS codes,
+      (
+        SELECT COUNT(p2.item_id)
+        FROM Purchases p2
+        WHERE p2.item_id = p1.item_id AND p2.user_id = p1.user_id AND p2.id <= p1.id
+        GROUP BY p2.item_id
+      ) AS total
+      FROM Purchases p1
+      INNER JOIN Items i ON i.item_id = p1.item_id
+      WHERE p1.user_id = ?
+      ORDER BY p1.id
+      DESC
+      LIMIT ?
+      OFFSET ?
     `, [userId, limit, offset]);
   }
 
   getPurchase(purchaseId: number): Promise<Purchase> {
     return this.dbQuery(`
-      SELECT ${this.purchaseKeys}, ${this.barcodeQuery}
-      ${this.source}
-      ${this.itemsJoin}
-      WHERE Purchases.id = ?
+      SELECT p1.id, p1.item_id, p1.date, i.name, i.price, i.volume, i.alcohol,
+      (
+        SELECT group_concat(Barcodes.code) AS codes
+        FROM Barcodes
+        WHERE Barcodes.item_id = p1.item_id
+        GROUP BY Barcodes.item_id
+      ) AS codes
+      FROM Purchases p1
+      INNER JOIN Items i ON i.item_id = p1.item_id
+      WHERE p1.id = ?
     `, [purchaseId])
       .then((res: any[]) => res[0]);
   }
 
   getLatestUserPurchase(userId: string): Promise<Purchase> {
     return this.dbQuery(`
-      SELECT ${this.purchaseKeys}, ${this.barcodeQuery}
-      ${this.source}
-      ${this.itemsJoin}
-      WHERE Purchases.user_id = ?
-      ORDER BY Purchases.id
+      SELECT u.user_id, u.email, u.firstname, u.lastname, u.debt, u.lobare, u.admin, p1.id, p1.item_id, p1.date, i.name, i.price, i.volume, i.alcohol,
+      (
+        SELECT group_concat(b.code) AS codes
+        FROM Barcodes b
+        WHERE b.item_id = p1.item_id
+        GROUP BY b.item_id
+      ) AS codes,
+      (
+        SELECT COUNT(p2.item_id)
+        FROM Purchases p2
+        WHERE p2.item_id = p1.item_id AND p2.user_id = u.user_id AND p2.id <= p1.id
+        GROUP BY p2.item_id
+      ) AS total
+      FROM Purchases p1
+      INNER JOIN Items i ON i.item_id = p1.item_id
+      INNER JOIN Users u ON u.user_id = p1.user_id
+      WHERE u.user_id = ?
+      ORDER BY p1.id
       DESC
       LIMIT 1
     `, [userId])
@@ -59,20 +77,44 @@ export class PurchaseRepository extends BaseRepository {
 
   getPurchases(limit: number, offset: number): Promise<Purchase[]> {
     return this.dbQuery(`
-      SELECT ${this.purchaseKeys}, ${this.barcodeQuery}
-      ${this.source}
-      ${this.itemsJoin}
-      ${this.order}
+      SELECT p1.id, p1.item_id, p1.date, i.name, i.price, i.volume, i.alcohol,
+      (
+        SELECT group_concat(Barcodes.code) AS codes
+        FROM Barcodes
+        WHERE Barcodes.item_id = p1.item_id
+        GROUP BY Barcodes.item_id
+      ) AS codes
+      FROM Purchases p1
+      INNER JOIN Items i ON i.item_id = p1.item_id
+      ORDER BY p1.id
+      DESC
+      LIMIT ?
+      OFFSET ?
     `, [limit, offset]);
   }
 
   getFeedPurchases(limit: number, offset: number): Promise<Purchase[] & User[]> {
     return this.dbQuery(`
-      SELECT ${this.userKeys}, ${this.purchaseKeys}, ${this.barcodeQuery}
-      ${this.source}
-      ${this.itemsJoin}
-      INNER JOIN Users ON Users.user_id = Purchases.user_id
-      ${this.order}
+      SELECT u.user_id, u.email, u.firstname, u.lastname, u.debt, u.lobare, u.admin, p1.id, p1.item_id, p1.date, i.name, i.price, i.volume, i.alcohol,
+      (
+        SELECT group_concat(b.code) AS codes
+        FROM Barcodes b
+        WHERE b.item_id = p1.item_id
+        GROUP BY b.item_id
+      ) AS codes,
+      (
+        SELECT COUNT(p2.item_id)
+        FROM Purchases p2
+        WHERE p2.item_id = p1.item_id AND p2.user_id = u.user_id AND p2.id <= p1.id
+        GROUP BY p2.item_id
+      ) AS total
+      FROM Purchases p1
+      INNER JOIN Items i ON i.item_id = p1.item_id
+      INNER JOIN Users u ON u.user_id = p1.user_id
+      ORDER BY p1.id
+      DESC
+      LIMIT ?
+      OFFSET ?
     `, [limit, offset]);
   }
 

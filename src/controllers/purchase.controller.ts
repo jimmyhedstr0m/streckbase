@@ -10,3 +10,11 @@ export const getPurchases = (req, res) => {
   purchaseService.getPurchases(limit, offset)
     .then((purchases: Purchase[]) => res.json(purchases));
 }
+
+export const getPurchase = (req, res) => {
+  const purchaseId: number = req.params.id;
+  if (!purchaseId) return res.sendStatus(404);
+
+  purchaseService.getPurchase(purchaseId)
+    .then((purchase: Purchase) => res.json(purchase));
+}

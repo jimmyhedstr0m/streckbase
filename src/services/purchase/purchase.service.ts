@@ -28,13 +28,24 @@ export class PurchaseService {
           })
           .map();
 
-        return <Partial<Purchase>>{ item };
+          const purchase: Partial<Purchase> = {
+            item,
+            totalCount: dbPurchase.total
+          };
+  
+          return purchase;
       })
       .map();
+  }
+
+  getPurchase(purchaseId: number): Promise<Purchase> {
+    return this.purchaseRepository.getPurchase(purchaseId)
+      .then((dbPurchase: DBPurchase) => this.mapPurchase(dbPurchase));
   }
 
   getPurchases(limit: number, offset: number): Promise<Purchase[]> {
     return this.purchaseRepository.getPurchases(limit, offset)
       .then((dbPurchases: DBPurchase[]) => dbPurchases.map<Purchase>((dbPurchase: DBPurchase) => this.mapPurchase(dbPurchase)));
   }
+
 }

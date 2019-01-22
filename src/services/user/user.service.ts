@@ -48,11 +48,16 @@ export class UserService {
           .createMap(<DBItem>subset(DBItem, dbPurchase))
           .forMember((dbItem: DBItem) => <Partial<Item>>{
             id: dbItem.item_id,
-            barcodes: dbItem.codes ? dbItem.codes.split(",") : []
+            barcodes: dbItem.codes ? dbItem.codes.split(",") : [],            
           })
           .map();
 
-        return <Partial<Purchase>>{ item };
+        const purchase: Partial<Purchase> = {
+          item,
+          totalCount: dbPurchase.total
+        };
+
+        return purchase;
       })
       .map();
   }

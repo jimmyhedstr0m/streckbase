@@ -7,4 +7,5 @@ export class Purchase {
   volume?: number = null;
   alcohol?: number = null;
   codes: string = null;
+  total: number = null;
 }

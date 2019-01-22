@@ -26,6 +26,11 @@ app.use((req, res, next) => {
 
 app.use("/api/static", express.static(path.join(__dirname, "public")));
 
+app.use((err, req, res, next) => {
+  console.error("stack", err.stack);
+  res.sendStatus(500);
+});
+
 app.get("/api/users/purchases", userController.getFeedPurchases);
 app.get("/api/users/:id?", userController.getUsers);
 app.post("/api/users", userController.createUser);
@@ -42,14 +47,10 @@ app.get("/api/systembolaget", systembolagetController.searchItem);
 app.get("/api/systembolaget/image", systembolagetController.getImage);
 
 app.get("/api/purchases", purchaseController.getPurchases);
+app.get("/api/purchases/:id", purchaseController.getPurchase);
 app.get("/api/test", (req, res) => {
   res.json({ ok: "yes" });
 })
-
-app.use((err, req, res, next) => {
-  console.error("stack", err.stack);
-  res.sendStatus(500);
-});
 
 app.listen(app.get("port"), () => {
   console.log(`Listening on port ${app.get("port")}`);
