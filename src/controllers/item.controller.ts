@@ -31,3 +31,22 @@ export const getBarcodeItem = (req, res) => {
       res.json(item);
     });
 }
+
+export const createItem = (req, res) => {
+  // if (!req.body) return res.sendStatus(400);
+
+  // userService.createUser(req.body)
+  //   .then((user: User) => {
+  //     res.status(201).json(user);
+  //   }).catch(() => res.status(409).json({}));
+}
+
+export const updateItem = (req, res) => {
+  if (!req.body) return res.sendStatus(400);
+
+  itemService.updateItem(req.body)
+    .then((item: Item) => {
+      if (!item) return res.sendStatus(404);
+      res.json(item);
+    });
+}

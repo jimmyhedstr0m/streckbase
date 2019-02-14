@@ -60,4 +60,9 @@ export class ItemService {
     return this.itemRepository.getBarcodeItem(barcode)
       .then((dbItem: DBItem) => this.mapItem(dbItem));
   }
+
+  updateItem(item: Item): Promise<Item> {
+    return this.itemRepository.updateItem(item)
+      .then(() => this.getItem(item.id));
+  }
 }

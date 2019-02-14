@@ -19,6 +19,7 @@ router.delete("/users/:userId/purchases/:purchaseId", userController.deleteUserP
 
 router.get("/items/:id?", itemController.getItems);
 router.get("/items/barcodes/:barcode", itemController.getBarcodeItem);
+router.put("/items/:id", itemController.updateItem);
 
 router.get("/systembolaget", systembolagetController.searchItem);
 router.get("/systembolaget/image", systembolagetController.getImage);

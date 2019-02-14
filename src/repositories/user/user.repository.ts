@@ -38,7 +38,7 @@ export class UserRepository extends BaseRepository {
 
   updateUser(user: APIUser): Promise<any> {
     return this.dbQuery(`
-      UPDATE Users SET email=?, debt=?, lobare=?, admin=? WHERE user_id=?
+      UPDATE Users SET email = ?, debt = ?, lobare = ?, admin = ? WHERE user_id = ?
     `, [user.email, user.debt, user.lobare, user.admin, user.id]);
   }
 }
