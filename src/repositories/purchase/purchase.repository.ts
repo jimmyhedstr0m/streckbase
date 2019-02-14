@@ -43,7 +43,7 @@ export class PurchaseRepository extends BaseRepository {
         GROUP BY Barcodes.item_id
       ) AS codes
       FROM Purchases p1
-      INNER JOIN Items i ON i.item_id = p1.item_id
+      JOIN Items i ON i.item_id = p1.item_id
       WHERE p1.id = ?
     `, [purchaseId])
       .then((res: any[]) => res[0]);
@@ -62,11 +62,10 @@ export class PurchaseRepository extends BaseRepository {
         SELECT COUNT(p2.item_id)
         FROM Purchases p2
         WHERE p2.item_id = p1.item_id AND p2.user_id = u.user_id AND p2.id <= p1.id
-        GROUP BY p2.item_id
       ) AS total
       FROM Purchases p1
-      INNER JOIN Items i ON i.item_id = p1.item_id
-      INNER JOIN Users u ON u.user_id = p1.user_id
+      JOIN Items i ON i.item_id = p1.item_id
+      JOIN Users u ON u.user_id = p1.user_id
       WHERE u.user_id = ?
       ORDER BY p1.id
       DESC
@@ -85,7 +84,7 @@ export class PurchaseRepository extends BaseRepository {
         GROUP BY Barcodes.item_id
       ) AS codes
       FROM Purchases p1
-      INNER JOIN Items i ON i.item_id = p1.item_id
+      JOIN Items i ON i.item_id = p1.item_id
       ORDER BY p1.id
       DESC
       LIMIT ?
@@ -106,11 +105,10 @@ export class PurchaseRepository extends BaseRepository {
         SELECT COUNT(p2.item_id)
         FROM Purchases p2
         WHERE p2.item_id = p1.item_id AND p2.user_id = u.user_id AND p2.id <= p1.id
-        GROUP BY p2.item_id
       ) AS total
       FROM Purchases p1
-      INNER JOIN Items i ON i.item_id = p1.item_id
-      INNER JOIN Users u ON u.user_id = p1.user_id
+      JOIN Items i ON i.item_id = p1.item_id
+      JOIN Users u ON u.user_id = p1.user_id
       ORDER BY p1.id
       DESC
       LIMIT ?
