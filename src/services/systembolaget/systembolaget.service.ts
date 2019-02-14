@@ -1,6 +1,6 @@
 import request from "request";
 
-import { toCamel } from "@helpers/utils";
+import { toCamel } from "@helpers";
 import { SystembolagetItem } from "./systembolaget-item";
 
 export class SystembolagetService {

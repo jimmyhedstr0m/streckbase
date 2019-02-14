@@ -15,7 +15,7 @@
       ],
       "@config/*": ["src/config/*"],
       "@controllers/*": ["src/controllers/*"],
-      "@helpers/*": ["src/helpers/*"],
+      "@helpers": ["src/helpers/index"],
       "@repositories/*": ["src/repositories/*"],
       "@services/*": ["src/services/*"],
     }

@@ -1,4 +1,4 @@
-import { Mapper } from "@helpers/mapper";
+import { Mapper } from "@helpers";
 import { Item } from "./item";
 import { Item as DBItem } from "@repositories/item/item";
 import { ItemRepository } from "@repositories/item/item.repository";
