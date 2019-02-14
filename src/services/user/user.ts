@@ -1,4 +1,4 @@
-import { Purchase } from "./../purchase/purchase";
+import { Purchase } from "@services/purchase/purchase";
 
 export class User {
   id: string = null;

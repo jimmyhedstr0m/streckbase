@@ -1,6 +1,6 @@
 import { BaseRepository } from "./../base.repository";
 import { User } from "./user";
-import { User as APIUser } from "./../../services/user/user";
+import { User as APIUser } from "@services/user/user";
 
 export class UserRepository extends BaseRepository {
   private userKeys: string = "user_id, firstname, lastname, email, debt, lobare, admin";

@@ -1,5 +1,5 @@
-import { ItemService } from "./../services/item/item.service";
-import { Item } from "./../services/item/item";
+import { ItemService } from "@services/item/item.service";
+import { Item } from "@services/item/item";
 
 const itemService = new ItemService();
 

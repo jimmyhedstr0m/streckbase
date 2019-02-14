@@ -1,6 +1,6 @@
 import { MysqlError } from "mysql";
 
-import dbConnection from "./../config/dbConnection";
+import dbConnection from "@config/dbConnection";
 
 export class BaseRepository {
 

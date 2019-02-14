@@ -6,10 +6,10 @@ export function subset<T, U>(classType: new () => T, object: U): T {
 }
 
 export function toCamel(obj) {
-  var newO;
-  var origKey;
-  var newKey;
-  var value;
+  let newO;
+  let origKey;
+  let newKey;
+  let value;
 
   if (obj instanceof Array) {
     return obj.map((value) => {

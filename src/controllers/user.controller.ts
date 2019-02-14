@@ -1,6 +1,6 @@
-import { UserService } from "./../services/user/user.service";
-import { User } from "./../services/user/user";
-import { Item } from "./../services/item/item";
+import { UserService } from "@services/user/user.service";
+import { User } from "@services/user/user";
+import { Item } from "@services/item/item";
 
 const userService = new UserService();
 

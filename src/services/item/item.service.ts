@@ -1,7 +1,7 @@
-import { Mapper } from "./../../helpers/mapper";
+import { Mapper } from "@helpers/mapper";
 import { Item } from "./item";
-import { Item as DBItem } from "./../../repositories/item/item";
-import { ItemRepository } from "./../../repositories/item/item.repository";
+import { Item as DBItem } from "@repositories/item/item";
+import { ItemRepository } from "@repositories/item/item.repository";
 import { SystembolagetItem } from "./../systembolaget/systembolaget-item";
 import { SystembolagetService } from "./../systembolaget/systembolaget.service";
 import { ImageService } from "./../image/image.service";

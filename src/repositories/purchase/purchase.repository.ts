@@ -1,6 +1,6 @@
-import { BaseRepository } from "../base.repository";
+import { BaseRepository } from "./../base.repository";
 import { Purchase } from "./purchase";
-import { User } from "./../user/user";
+import { User } from "@services/user/user";
 
 export class PurchaseRepository extends BaseRepository {
 

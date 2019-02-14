@@ -12,7 +12,12 @@
       "*": [
         "node_modules/*",
         "src/types/*"
-      ]
+      ],
+      "@config/*": ["src/config/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@helpers/*": ["src/helpers/*"],
+      "@repositories/*": ["src/repositories/*"],
+      "@services/*": ["src/services/*"],
     }
   },
   "include": [

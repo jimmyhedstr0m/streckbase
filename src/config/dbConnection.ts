@@ -8,6 +8,6 @@ const dbConnection = mysql.createConnection({
   database: process.env.DATABASE_NAME,
 });
 
-dbConnection.connect();
+dbConnection.connect(() => console.log("Connect to MySQL"));
 
 export default dbConnection;

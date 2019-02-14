@@ -1,7 +1,7 @@
 import request from "request";
 
-import { SystembolagetService } from "./../services/systembolaget/systembolaget.service";
-import { SystembolagetItem } from "./../services/systembolaget/systembolaget-item";
+import { SystembolagetService } from "@services/systembolaget/systembolaget.service";
+import { SystembolagetItem } from "@services/systembolaget/systembolaget-item";
 
 const systembolagetService = new SystembolagetService();
 

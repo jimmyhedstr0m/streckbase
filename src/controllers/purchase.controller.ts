@@ -1,5 +1,5 @@
-import { PurchaseService } from "./../services/purchase/purchase.service";
-import { Purchase } from "./../services/purchase/purchase";
+import { PurchaseService } from "@services/purchase/purchase.service";
+import { Purchase } from "@services/purchase/purchase";
 
 const purchaseService = new PurchaseService();
 

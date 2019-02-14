@@ -1,14 +1,14 @@
-import { Mapper } from "./../../helpers/mapper";
+import { Mapper } from "@helpers/mapper";
+import { User as DBUser } from "@repositories/user/user";
+import { UserRepository } from "@repositories/user/user.repository";
+import { PurchaseRepository } from "@repositories/purchase/purchase.repository";
+import { Purchase } from "@services/purchase/purchase";
+import { Purchase as DBPurchase } from "@repositories/purchase/purchase";
+import { ItemRepository } from "@repositories/item/item.repository";
+import { Item } from "@services/item/item";
+import { Item as DBItem } from "@repositories/item/item";
+import { subset } from "@helpers/utils";
 import { User } from "./user";
-import { User as DBUser } from "./../../repositories/user/user";
-import { UserRepository } from "./../../repositories/user/user.repository";
-import { PurchaseRepository } from "./../../repositories/purchase/purchase.repository";
-import { Purchase } from "./../../services/purchase/purchase";
-import { Purchase as DBPurchase } from "./../../repositories/purchase/purchase";
-import { ItemRepository } from "./../../repositories/item/item.repository";
-import { Item } from "./../item/item";
-import { Item as DBItem } from "./../../repositories/item/item";
-import { subset } from "./../../helpers/utils";
 
 export class UserService {
   private userRepository: UserRepository;
