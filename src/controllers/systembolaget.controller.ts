@@ -19,3 +19,17 @@ export const getImage = (req, res) => {
 
   request.get(url).pipe(res);
 }
+
+export const getProxy = (req, res) => {
+  systembolagetService.getProxy(req.query.url)
+    .then((data: any) => {
+      res.send(data);
+    });
+}
+
+export const postProxy = (req, res) => {
+  systembolagetService.postProxy(req.query.url, req.body)
+    .then((data: any) => {
+      res.json(data);
+    });
+}
