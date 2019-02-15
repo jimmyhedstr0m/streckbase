@@ -45,6 +45,7 @@ export class ItemRepository extends BaseRepository {
       LEFT JOIN Images ON Images.item_id = Items.item_id
       GROUP BY Items.item_id
       ORDER BY Items.item_id
+      DESC
       LIMIT ?
       OFFSET ?
     `, [limit, offset]);
