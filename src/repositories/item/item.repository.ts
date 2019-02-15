@@ -52,20 +52,32 @@ export class ItemRepository extends BaseRepository {
 
   createItem(item: APIItem): Promise<any> {
     const barcodes: string = item.barcodes.map((barcode: string) => barcode.trim()).join();
+    let id: number;
+
     return new Promise((resolve, reject) => {
       dbConnection.getConnection((err: MysqlError, connection: PoolConnection) => {
         if (err) return reject(err);
 
-        // TODO add image
         this.beginTransaction(connection)
           .then(() => this.poolQuery(connection, `
               INSERT INTO Items (name, price, volume, alcohol) VALUES (?, ?, ?, ?)
             `, [item.name, item.price, item.volume, item.alcohol])
           )
-          .then((results: any) => this.poolQuery(connection, `
+          .then((results: any) => {
+            id = results.insertId;
+            return this.poolQuery(connection, `
               INSERT INTO Barcodes (code, item_id) VALUES (?, ?)
-            `, [barcodes, results.insertId])
-          )
+            `, [barcodes, id]);
+          })
+          .then(() => {
+            if (!item.imageUrl) {
+              return new Promise((resolve) => resolve());
+            } else {
+              return this.poolQuery(connection, `
+                INSERT INTO Images (item_id, large) VALUES (?, ?)
+              `, [id, item.imageUrl]);
+            }
+          })
           .then(() => this.commit(connection))
           .then(() => resolve())
           .catch((err: MysqlError) => {
