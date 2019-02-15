@@ -1,5 +1,5 @@
 export class Item {
-  id: number = null;
+  id?: number = null;
   name: string = null;
   price: number = null;
   volume?: number = null;

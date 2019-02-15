@@ -8,13 +8,13 @@ import { ImageService } from "./../image/image.service";
 
 export class ItemService {
   private itemRepository: ItemRepository;
-  private systembolagetService: SystembolagetService;
-  private imageService: ImageService;
+  // private systembolagetService: SystembolagetService;
+  // private imageService: ImageService;
 
   constructor() {
     this.itemRepository = new ItemRepository();
-    this.systembolagetService = new SystembolagetService();
-    this.imageService = new ImageService();
+    // this.systembolagetService = new SystembolagetService();
+    // this.imageService = new ImageService();
   }
 
   private mapItem(dbItem: DBItem): Item {
@@ -31,7 +31,13 @@ export class ItemService {
       .map();
   }
 
+  private getLatestEntry(): Promise<Item> {
+    return this.itemRepository.getLatestId()
+      .then((id: number) => this.getItem(id));
+  }
+
   getItem(id: number): Promise<Item> {
+    if (id === null) return null;
 
     return this.itemRepository.getItem(id)
       .then((dbItem: DBItem) => {
@@ -59,6 +65,11 @@ export class ItemService {
   getBarcodeItem(barcode: string): Promise<Item> {
     return this.itemRepository.getBarcodeItem(barcode)
       .then((dbItem: DBItem) => this.mapItem(dbItem));
+  }
+
+  createItem(item: Item): Promise<Item> {
+    return this.itemRepository.createItem(item)
+      .then(() => this.getLatestEntry());
   }
 
   updateItem(item: Item): Promise<Item> {

@@ -33,12 +33,12 @@ export const getBarcodeItem = (req, res) => {
 }
 
 export const createItem = (req, res) => {
-  // if (!req.body) return res.sendStatus(400);
+  if (!req.body || !req.body.barcodes || req.body.barcodes.length === 0) return res.sendStatus(400);
 
-  // userService.createUser(req.body)
-  //   .then((user: User) => {
-  //     res.status(201).json(user);
-  //   }).catch(() => res.status(409).json({}));
+  itemService.createItem(req.body)
+    .then((item: Item) => {
+      res.status(201).json(item);
+    }).catch(() => res.status(409).json({}));
 }
 
 export const updateItem = (req, res) => {

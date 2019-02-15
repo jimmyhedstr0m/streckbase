@@ -7,8 +7,6 @@ import * as systembolagetController from "./controllers/systembolaget.controller
 
 const router: Router = express.Router();
 
-// router.use((req, res, next) => next());
-
 router.get("/users/purchases", userController.getFeedPurchases);
 router.get("/users/:id?", userController.getUsers);
 router.get("/users/:userId/purchases/:purchaseId?", userController.getUserPurchases);
@@ -19,6 +17,7 @@ router.delete("/users/:userId/purchases/:purchaseId", userController.deleteUserP
 
 router.get("/items/:id?", itemController.getItems);
 router.get("/items/barcodes/:barcode", itemController.getBarcodeItem);
+router.post("/items", itemController.createItem);
 router.put("/items/:id", itemController.updateItem);
 
 router.get("/systembolaget", systembolagetController.searchItem);
