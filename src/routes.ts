@@ -15,8 +15,9 @@ router.post("/users/:userId/purchases", userController.createPurchase);
 router.put("/users/:id", userController.updateUser);
 router.delete("/users/:userId/purchases/:purchaseId", userController.deleteUserPurchase);
 
-router.get("/items/:id?", itemController.getItems);
 router.get("/items/barcodes/:barcode", itemController.getBarcodeItem);
+router.get("/items/popular", itemController.getPopularItems);
+router.get("/items/:id?", itemController.getItems);
 router.post("/items", itemController.createItem);
 router.put("/items/:id", itemController.updateItem);
 

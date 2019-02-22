@@ -27,12 +27,12 @@ export class PurchaseService {
           })
           .map();
 
-          const purchase: Partial<Purchase> = {
-            item,
-            totalCount: dbPurchase.total
-          };
-  
-          return purchase;
+        const purchase: Partial<Purchase> = {
+          item,
+          totalCount: dbPurchase.total
+        };
+
+        return purchase;
       })
       .map();
   }

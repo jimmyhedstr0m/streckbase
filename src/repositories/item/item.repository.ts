@@ -51,6 +51,23 @@ export class ItemRepository extends BaseRepository {
     `, [limit, offset]);
   }
 
+  getPopularItems(limit: number): Promise<Item[]> {
+    return this.dbQuery(`
+    SELECT i.item_id, i.name, i.price, i.volume, i.alcohol, i.systembolaget_id, img.thumbnail, img.large AS image,
+    (
+      SELECT group_concat(b.code) FROM Barcodes b WHERE b.item_id = i.item_id
+    ) AS codes
+    FROM Purchases p
+    JOIN Items i ON i.item_id = p.item_id
+    LEFT JOIN Images img ON img.item_id = i.item_id
+    WHERE p.date >= DATE(NOW()) - INTERVAL 1 MONTH
+    GROUP BY p.item_id
+    ORDER BY COUNT(p.item_id)
+    DESC
+    LIMIT ?
+    `, [limit]);
+  }
+
   createItem(item: APIItem): Promise<any> {
     const barcodes: string = item.barcodes.map((barcode: string) => barcode.trim()).join();
     let id: number;

@@ -62,6 +62,11 @@ export class ItemService {
       .then((dbItems: DBItem[]) => dbItems.map<Item>((dbItem: DBItem) => this.mapItem(dbItem)));
   }
 
+  getPopularItems(limit: number): Promise<Item[]> {
+    return this.itemRepository.getPopularItems(limit)
+      .then((dbItems: DBItem[]) => dbItems.map<Item>((dbItem: DBItem) => this.mapItem(dbItem)));
+  }
+
   getBarcodeItem(barcode: string): Promise<Item> {
     return this.itemRepository.getBarcodeItem(barcode)
       .then((dbItem: DBItem) => this.mapItem(dbItem));

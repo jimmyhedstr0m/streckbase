@@ -21,6 +21,13 @@ export const getItems = (req, res) => {
   }
 }
 
+export const getPopularItems = (req, res) => {
+  const limit = parseInt(req.query.limit, 10) || 20;
+
+  itemService.getPopularItems(limit)
+    .then((items: Item[]) => res.json(items));
+}
+
 export const getBarcodeItem = (req, res) => {
   const barcode: string = req.params.barcode;
   if (!barcode) return res.sendStatus(404);
@@ -33,7 +40,7 @@ export const getBarcodeItem = (req, res) => {
 }
 
 export const createItem = (req, res) => {
-  if (!req.body || !req.body.barcodes || req.body.barcodes.length === 0) return res.sendStatus(400);
+  if (!req.body || !req.body.barcodes || req.body.barcodes.length === 0) return res.sendStatus(400);
 
   itemService.createItem(req.body)
     .then((item: Item) => {
