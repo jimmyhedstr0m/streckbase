@@ -3,6 +3,7 @@ import express, { Router } from "express";
 import * as userController from "./controllers/user.controller";
 import * as itemController from "./controllers/item.controller";
 import * as purchaseController from "./controllers/purchase.controller";
+import * as statisticsController from "./controllers/statistics.controller";
 import * as systembolagetController from "./controllers/systembolaget.controller";
 
 const router: Router = express.Router();
@@ -20,6 +21,8 @@ router.get("/items/popular", itemController.getPopularItems);
 router.get("/items/:id?", itemController.getItems);
 router.post("/items", itemController.createItem);
 router.put("/items/:id", itemController.updateItem);
+
+router.get("/statistics/highscore", statisticsController.getMonthlyHighscore);
 
 router.get("/systembolaget", systembolagetController.searchItem);
 router.get("/systembolaget/image", systembolagetController.getImage);

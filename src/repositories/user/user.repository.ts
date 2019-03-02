@@ -23,6 +23,25 @@ export class UserRepository extends BaseRepository {
     `, [limit, offset]);
   }
 
+  getMonthlyHighscore(): Promise<User[]> {
+    return this.dbQuery(`
+      SELECT u.user_id, u.email, u.firstname, u.lastname, u.lobare, u.admin,
+        IFNULL(
+          (SELECT SUM(i.price)
+          FROM Purchases p
+          JOIN Items i ON p.item_id = i.item_id
+          WHERE u.user_id = p.user_id 
+            AND EXTRACT(YEAR FROM p.date) = YEAR(NOW())
+            AND EXTRACT(MONTH FROM p.date) = MONTH(NOW())
+          GROUP BY p.user_id), 
+        0) AS debt
+      FROM Users u
+      WHERE u.lobare = 1
+      ORDER BY debt
+      DESC
+    `);
+  }
+
   updateDebt(id: string, debt: number): Promise<any> {
     return this.dbQuery(`
       UPDATE Users SET debt = ?

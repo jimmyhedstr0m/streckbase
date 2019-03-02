@@ -47,7 +47,7 @@ export class UserService {
           .createMap(<DBItem>subset(DBItem, dbPurchase))
           .forMember((dbItem: DBItem) => <Partial<Item>>{
             id: dbItem.item_id,
-            barcodes: dbItem.codes ? dbItem.codes.split(",") : [],            
+            barcodes: dbItem.codes ? dbItem.codes.split(",") : [],
           })
           .map();
 
@@ -180,5 +180,10 @@ export class UserService {
       })
       .then(() => this.userRepository.updateDebt(userId, debt - price))
   };
+
+  getMonthlyHighscore(): Promise<User[]> {
+    return this.userRepository.getMonthlyHighscore()
+      .then((dbUsers: DBUser[]) => dbUsers.map<User>((dbUser: DBUser) => this.mapUser(dbUser)));
+  }
 
 }
