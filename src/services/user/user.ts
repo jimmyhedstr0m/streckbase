@@ -8,5 +8,6 @@ export class User {
   debt: number = null;
   lobare: boolean = null;
   admin: boolean = null;
+  totalDebt: number = null;
   purchases?: Purchase[];
 }

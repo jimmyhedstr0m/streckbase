@@ -6,4 +6,5 @@ export class User {
   debt: number = null;
   lobare: boolean = null;
   admin: boolean = null;
+  totaltDebt: number = null;
 }
