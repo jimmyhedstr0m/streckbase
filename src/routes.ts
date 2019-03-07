@@ -32,7 +32,7 @@ router.get("/purchases/:id", purchaseController.getPurchase);
 
 
 router.get("/health", (req, res) => {
-  res.json({ status: "ok" });
+  res.json({ status: "okeeey" });
 });
 
 export default router;
