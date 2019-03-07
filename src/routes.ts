@@ -30,9 +30,4 @@ router.get("/systembolaget/image", systembolagetController.getImage);
 router.get("/purchases", purchaseController.getPurchases);
 router.get("/purchases/:id", purchaseController.getPurchase);
 
-
-router.get("/health", (req, res) => {
-  res.json({ status: "ok" });
-});
-
 export default router;
