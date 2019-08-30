@@ -33,6 +33,7 @@ export class UserRepository extends BaseRepository {
           WHERE u.user_id = p.user_id 
             AND EXTRACT(YEAR FROM p.date) = YEAR(NOW())
             AND EXTRACT(MONTH FROM p.date) = MONTH(NOW())
+            AND i.item_id NOT IN (130, 253)
           GROUP BY p.user_id), 
         0) AS debt
       FROM Users u
