@@ -116,4 +116,10 @@ export class ItemRepository extends BaseRepository {
     `, [item.name, item.price, item.volume, item.alcohol, item.barcodes.join(), item.id]);
   }
 
+  deleteItem(id: number): Promise<any> {
+    return this.dbQuery(`
+      DELETE FROM Items WHERE item_id = ?
+    `, [id]);
+  }
+
 }

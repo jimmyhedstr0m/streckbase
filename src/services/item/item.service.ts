@@ -81,4 +81,9 @@ export class ItemService {
     return this.itemRepository.updateItem(item)
       .then(() => this.getItem(item.id));
   }
+
+  deleteItem(id: number): Promise<void> {
+    return this.itemRepository.deleteItem(id)
+      .then(() => Promise.resolve());
+  }
 }

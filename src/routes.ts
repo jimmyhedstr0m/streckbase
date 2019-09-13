@@ -21,6 +21,7 @@ router.get("/items/popular", itemController.getPopularItems);
 router.get("/items/:id?", itemController.getItems);
 router.post("/items", itemController.createItem);
 router.put("/items/:id", itemController.updateItem);
+router.delete("/items/:id", itemController.deleteItem);
 
 router.get("/statistics/highscore", statisticsController.getMonthlyHighscore);
 

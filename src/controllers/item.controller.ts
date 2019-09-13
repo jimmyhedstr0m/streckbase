@@ -57,3 +57,11 @@ export const updateItem = (req, res) => {
       res.json(item);
     });
 }
+
+export const deleteItem = (req, res) => {
+  const id: number = req.params.id;
+  itemService.deleteItem(id)
+    .then(() => {
+      return res.sendStatus(204);
+    });
+}
