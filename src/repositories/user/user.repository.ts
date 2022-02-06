@@ -3,13 +3,13 @@ import { User } from "./user";
 import { User as APIUser } from "@services/user/user";
 
 export class UserRepository extends BaseRepository {
-
   constructor() {
     super();
   }
 
   getUser(id: string): Promise<User> {
-    return this.dbQuery(`
+    return this.dbQuery(
+      `
       SELECT u.user_id, u.email, u.firstname, u.lastname, u.lobare, u.admin, u.debt,
         IFNULL(
           (SELECT SUM(i.price)
@@ -20,12 +20,14 @@ export class UserRepository extends BaseRepository {
         0) AS totalDebt
       FROM Users u
       WHERE user_id = ?
-    `, [id])
-      .then((res: any[]) => res[0]);
+    `,
+      [id]
+    ).then((res: any[]) => res[0]);
   }
 
   getUsers(limit: number, offset: number): Promise<User[]> {
-    return this.dbQuery(`
+    return this.dbQuery(
+      `
       SELECT u.user_id, u.email, u.firstname, u.lastname, u.lobare, u.admin, u.debt,
         IFNULL(
           (SELECT SUM(i.price)
@@ -35,9 +37,12 @@ export class UserRepository extends BaseRepository {
           GROUP BY p.user_id),
         0) AS totalDebt
       FROM Users u
+      ORDER BY u.created_at ASC
       LIMIT ?
       OFFSET ?
-    `, [limit, offset]);
+    `,
+      [limit, offset]
+    );
   }
 
   getMonthlyHighscore(): Promise<User[]> {
@@ -68,21 +73,38 @@ export class UserRepository extends BaseRepository {
   }
 
   updateDebt(id: string, debt: number): Promise<any> {
-    return this.dbQuery(`
+    return this.dbQuery(
+      `
       UPDATE Users SET debt = ?
       WHERE user_id = ?
-    `, [debt, id]);
+    `,
+      [debt, id]
+    );
   }
 
   createUser(user: APIUser): Promise<any> {
-    return this.dbQuery(`
+    return this.dbQuery(
+      `
       INSERT INTO Users (user_id, firstname, lastname, email, debt, lobare, admin) VALUES (?, ?, ?, ?, ?, ?, ?)
-    `, [user.id, user.firstname, user.lastname, user.email, 0, user.lobare, user.admin]);
+    `,
+      [
+        user.id,
+        user.firstname,
+        user.lastname,
+        user.email,
+        0,
+        user.lobare,
+        user.admin,
+      ]
+    );
   }
 
   updateUser(user: APIUser): Promise<any> {
-    return this.dbQuery(`
+    return this.dbQuery(
+      `
       UPDATE Users SET email = ?, debt = ?, lobare = ?, admin = ? WHERE user_id = ?
-    `, [user.email, user.debt, user.lobare, user.admin, user.id]);
+    `,
+      [user.email, user.debt, user.lobare, user.admin, user.id]
+    );
   }
 }
