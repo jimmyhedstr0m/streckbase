@@ -63,6 +63,7 @@ export class UserRepository extends BaseRepository {
           FROM Purchases p
           JOIN Items i ON p.item_id = i.item_id
           WHERE u.user_id = p.user_id 
+            AND i.item_id NOT IN (569, 580, 590, 595)
           GROUP BY p.user_id),
         0) AS totalDebt
       FROM Users u
